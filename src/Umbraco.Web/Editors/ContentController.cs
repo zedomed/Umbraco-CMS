@@ -737,6 +737,8 @@ namespace Umbraco.Web.Editors
                     break;
                 case ContentSaveAction.Publish:
                 case ContentSaveAction.PublishNew:
+                case ContentSaveAction.PublishWithDescendants:
+                case ContentSaveAction.PublishWithDescendantsIncDrafts:
                     PublishInternal(contentItem, ref publishStatus, out wasCancelled, out var successfulCultures);
                     //global notifications
                     AddMessageForPublishStatus(publishStatus, globalNotifications, successfulCultures);
@@ -862,6 +864,38 @@ namespace Umbraco.Web.Editors
                     publishStatus = new PublishResult(PublishResultType.FailedCannotPublish, null, contentItem.PersistedContent);
                     wasCancelled = saveResult.Result == OperationResultType.FailedCancelledByEvent;
                     successfulCultures = Array.Empty<string>();
+                }
+
+
+                //The above will deal with publishing the current node - below deals with descendants if the action has been set
+                if(canPublish && (contentItem.Action == ContentSaveAction.PublishWithDescendants || contentItem.Action == ContentSaveAction.PublishWithDescendantsIncDrafts))
+                {
+                    //TODO: Which one - mixed usages in this controller
+                    //Security.CurrentUser.Id
+                    //Security.GetUserId().ResultOr(0)
+
+                    //Get a list of variant/cultures - due for publishing
+                    var culturesToPublish = contentItem.Variants.Where(x => x.Publish).Select(x => x.Name).ToArray();
+                    var includeDrafts = contentItem.Action == ContentSaveAction.PublishWithDescendantsIncDrafts;
+                    var bulkPublishResult = Services.ContentService.SaveAndPublishBranch(contentItem.PersistedContent, includeDrafts, culturesToPublish, Security.GetUserId().ResultOr(0));
+
+
+                    //Bulk Publish Result - returns a collection of 'PublishResult'
+                    var bulkResult = bulkPublishResult.FirstOrDefault(x => x.Success == false);
+                    if (bulkResult == null)
+                    {
+                        //No failures - so grab the first sucessful result
+                        bulkResult = bulkPublishResult.FirstOrDefault(x => x.Success);
+                    }
+
+                    //Update the publish status - from the descendants/tree
+                    publishStatus = bulkResult;
+
+                    //Was the result cancelled?
+                    wasCancelled = bulkResult.Result == PublishResultType.FailedCancelledByEvent;
+
+                    //Not sure - we need to update this again as likely not changed?!
+                    successfulCultures = contentItem.Variants.Where(x => x.Publish).Select(x => x.Culture).ToArray();
                 }
             }
         }
