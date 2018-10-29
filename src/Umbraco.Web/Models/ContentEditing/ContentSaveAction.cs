@@ -33,6 +33,16 @@
         /// <summary>
         /// Creates and sends publish notification
         /// </summary>
-        SendPublishNew = 5
+        SendPublishNew = 5,
+
+        /// <summary>
+        /// Saves and publishes the content item and it's descendants
+        /// </summary>
+        PublishWithDescendants = 6,
+
+        /// <summary>
+        /// Saves and publishes the content item and it's descendants including drafts
+        /// </summary>
+        PublishWithDescendantsIncDrafts = 7
     }
 }
