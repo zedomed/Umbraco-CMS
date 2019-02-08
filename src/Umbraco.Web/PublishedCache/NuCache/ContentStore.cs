@@ -364,15 +364,21 @@ namespace Umbraco.Web.PublishedCache.NuCache
 
         public void UpdateDataTypes(IEnumerable<int> dataTypeIds, Func<int, PublishedContentType> getContentType)
         {
+            var dataTypeIdsA = dataTypeIds.ToArray();
+            var isAll = dataTypeIdsA.Length == 0; // empty array = all
+
             var lockInfo = new WriteLockInfo();
             try
             {
                 Lock(lockInfo);
 
-                var contentTypes = _contentTypesById
-                    .Where(kvp =>
+                var temp = isAll
+                    ? _contentTypesById
+                    : _contentTypesById.Where(kvp =>
                         kvp.Value.Value != null &&
-                        kvp.Value.Value.PropertyTypes.Any(p => dataTypeIds.Contains(p.DataType.Id)))
+                        kvp.Value.Value.PropertyTypes.Any(p => dataTypeIdsA.Contains(p.DataType.Id)));
+
+                var contentTypes = temp
                     .Select(kvp => kvp.Value.Value)
                     .Select(x => getContentType(x.Id))
                     .Where(x => x != null) // poof, gone, very unlikely and probably an anomaly

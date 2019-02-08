@@ -87,6 +87,10 @@ namespace Umbraco.Core.Models.PublishedContent
         {
             lock (_publishedDataTypesLocker)
             {
+                // no ids = force-refresh all
+                if (ids.Length == 0)
+                    _publishedDataTypes = null;
+
                 if (_publishedDataTypes == null)
                 {
                     var dataTypes = _dataTypeService.GetAll();

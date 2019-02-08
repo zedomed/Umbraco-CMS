@@ -794,9 +794,12 @@ namespace Umbraco.Web.PublishedCache.NuCache
             if (_isReady == false)
                 return;
 
+            var isAll = payloads.Any(x => x.IsAll());
             var idsA = payloads.Select(x => x.Id).ToArray();
 
-            foreach (var payload in payloads)
+            if (isAll)
+                _logger.Debug<PublishedSnapshotService>("Notified Refreshed for all data types");
+            else foreach (var payload in payloads)
                 _logger.Debug<PublishedSnapshotService>("Notified {RemovedStatus} for data type {DataTypeId}",
                     payload.Removed ? "Removed" : "Refreshed",
                     payload.Id);
@@ -808,7 +811,7 @@ namespace Umbraco.Web.PublishedCache.NuCache
                 // this is triggering datatypes reload in the factory, and right after we create some
                 // content types by loading them ... there's a race condition here, which would require
                 // some locking on datatypes
-                _publishedContentTypeFactory.NotifyDataTypeChanges(idsA);
+                _publishedContentTypeFactory.NotifyDataTypeChanges(isAll ? Array.Empty<int>() : idsA); // empty array = all
 
                 using (var scope = _scopeProvider.CreateScope())
                 {

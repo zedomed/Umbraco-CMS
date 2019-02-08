@@ -1,10 +1,9 @@
 ﻿using System;
+using System.Linq;
 using Umbraco.Core.Cache;
 using Umbraco.Core.Models;
 using Umbraco.Core.PropertyEditors.ValueConverters;
 using Umbraco.Core.Services;
-using Umbraco.Web.PropertyEditors;
-using Umbraco.Web.PropertyEditors.ValueConverters;
 using Umbraco.Web.PublishedCache;
 
 
@@ -49,11 +48,18 @@ namespace Umbraco.Web.Cache
             ClearAllIsolatedCacheByEntityType<IMember>();
             ClearAllIsolatedCacheByEntityType<IMemberType>();
 
-            var dataTypeCache = AppCaches.IsolatedCaches.Get<IDataType>();
+            // zero id and key means "all"
+            var isAll = payloads.Any(x => x.Id == 0 && x.Key == Guid.Empty);
 
-            foreach (var payload in payloads)
+            if (isAll)
             {
-                _idkMap.ClearCache(payload.Id);
+                // TODO: this is a bit extreme, we should have ways to clear only some types
+                _idkMap.ClearCache();
+            }
+            else
+            {
+                foreach (var payload in payloads)
+                    _idkMap.ClearCache(payload.Id);
             }
 
             // TODO: not sure I like these?
@@ -71,7 +77,10 @@ namespace Umbraco.Web.Cache
 
         public override void RefreshAll()
         {
-            throw new NotSupportedException();
+            // TODO: this is temp, because we need to trigger a refresh for Core
+            // but really, all this should be *in* Core and this should throw!
+            Refresh(new[] { new JsonPayload() });
+            //throw new NotSupportedException();
         }
 
         public override void Refresh(int id)
@@ -95,6 +104,13 @@ namespace Umbraco.Web.Cache
 
         public class JsonPayload
         {
+            public JsonPayload()
+            {
+                // "all"
+                Id = 0;
+                Key = Guid.Empty;
+            }
+
             public JsonPayload(int id, Guid key, bool removed)
             {
                 Id = id;
@@ -107,6 +123,9 @@ namespace Umbraco.Web.Cache
             public Guid Key { get; }
 
             public bool Removed { get; }
+
+            // zero id and key means "all"
+            public bool IsAll() => Id == 0 && Key == Guid.Empty;
         }
 
         #endregion

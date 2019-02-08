@@ -99,6 +99,7 @@ namespace Umbraco.Core.Migrations.Upgrade.V_8_0_0
                 if (requiresCacheRebuild)
                 {
                     var dataTypeCacheRefresher = _cacheRefreshers[Guid.Parse("35B16C25-A17E-45D7-BC8F-EDAB1DCC28D2")];
+                    // TODO: this should use DistributedCache not messengers, alas DistributedCache lives in Umbraco.Web
                     _serverMessenger.PerformRefreshAll(dataTypeCacheRefresher);
                 }
             }
