@@ -66,7 +66,7 @@ namespace Umbraco.Tests.Routing
 
         // do not test for /base here as it's handled before EnsureUmbracoRoutablePage is called
         [TestCase("/umbraco_client/Tree/treeIcons.css", false)]
-        [TestCase("/umbraco_client/Tree/Themes/umbraco/style.css?cdv=37", false)]        
+        [TestCase("/umbraco_client/Tree/Themes/umbraco/style.css?cdv=37", false)]
         [TestCase("/umbraco/editContent.aspx", false)]
         [TestCase("/install/default.aspx", false)]
         [TestCase("/install/?installStep=license", false)]
@@ -94,6 +94,7 @@ namespace Umbraco.Tests.Routing
         [TestCase("/base/somebasehandler", false)]
         [TestCase("/", false)]
         [TestCase("/home.aspx", false)]
+        [TestCase("/home|.aspx", false)]
         public void Is_Client_Side_Request(string url, bool assert)
         {
             var uri = new Uri("http://test.com" + url);
