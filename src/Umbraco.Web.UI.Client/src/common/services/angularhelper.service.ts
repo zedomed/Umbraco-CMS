@@ -5,7 +5,7 @@ module umbraco.services {
     export class angularHelper {
 
         public revalidateNgModel(scope, ngModel) {
-            this.safeApply(scope, function() {
+            this.safeApply(scope, function () {
                 angular.forEach(ngModel.$parsers, function (parser) {
                     parser(ngModel.$viewValue);
                 });
@@ -127,6 +127,12 @@ module umbraco.services {
                 $setPristine: angular.noop,
                 $name: formName
             };
+        }
+    }
+
+    export namespace models {
+        export interface iHasScope {
+            scope: object
         }
     }
 }
