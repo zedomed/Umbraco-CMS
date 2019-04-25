@@ -27,7 +27,7 @@ namespace umbraco.services {
      * </pre>
      */
 
-    export class notificationsService {
+    export class NotificationsService {
         private nArray: Array<any> = new Array<any>();
 
         public current: Array<any> = this.nArray;
@@ -51,7 +51,7 @@ namespace umbraco.services {
                 if (item.view) {
                     item.view = this.setViewPath(item.view);
                     item.sticky = true;
-                    item.type = models.notificationType.form;
+                    item.type = models.NotificationType.Form;
                     item.headline = null;
                 }
 
@@ -122,19 +122,19 @@ namespace umbraco.services {
             }
 
             switch (notification.type) {
-                case models.genericNotificationType.save:
+                case models.GenericNotificationType.Save:
                     this.success(notification.header, notification.message);
                     break;
-                case models.genericNotificationType.info:
+                case models.GenericNotificationType.Info:
                     this.success(notification.header, notification.message);
                     break;
-                case models.genericNotificationType.error:
+                case models.GenericNotificationType.Error:
                     this.error(notification.header, notification.message);
                     break;
-                case models.genericNotificationType.success:
+                case models.GenericNotificationType.Success:
                     this.success(notification.header, notification.message);
                     break;
-                case models.genericNotificationType.warning:
+                case models.GenericNotificationType.Warning:
                     this.warning(notification.header, notification.message);
                     break;
             }
@@ -144,7 +144,7 @@ namespace umbraco.services {
             return this.add({
                 headline: headline,
                 message: message,
-                type: models.notificationType.success,
+                type: models.NotificationType.Success,
                 time: new Date()
             });
         }
@@ -153,7 +153,7 @@ namespace umbraco.services {
             return this.add({
                 headline: headline,
                 message: message,
-                type: models.notificationType.error,
+                type: models.NotificationType.Error,
                 time: new Date()
             });
         }
@@ -162,7 +162,7 @@ namespace umbraco.services {
             return this.add({
                 headline: headline,
                 message: message,
-                type: models.notificationType.warning,
+                type: models.NotificationType.Warning,
                 time: new Date()
             });
         }
@@ -171,7 +171,7 @@ namespace umbraco.services {
             return this.add({
                 headline: headline,
                 message: message,
-                type: models.notificationType.info,
+                type: models.NotificationType.Info,
                 time: new Date()
             });
         }
@@ -211,6 +211,10 @@ namespace umbraco.services {
         }
     }
 
+    // Alias the new uppercased version of the class to the old version for backwards compat to
+    // anything out there in the wild that might still be referencing it
+    export type notificationService = NotificationsService;
+
     /*
 		Models for Notification Service
 	*/
@@ -219,7 +223,7 @@ namespace umbraco.services {
             id?: string;
             headline?: string;
             message?: string;
-            type?: notificationType;
+            type?: NotificationType;
             url?: string;
             view?: string;
             actions?: Array<any>;
@@ -228,18 +232,19 @@ namespace umbraco.services {
             args?: Array<any>;
         }
 
-        export enum notificationType {
-            info = "info",
-            error = "error",
-            success = "success",
-            warning = "warning",
-            form = "form"
+        export enum NotificationType {
+            Info = "info",
+            Error = "error",
+            Success = "success",
+            Warning = "warning",
+            Form = "form"
         }
 
+        // TODO: These are only mildly differnt from the above, ideally they could be merged?
         export interface iGenericNotification {
             header?: string;
             message?: string;
-            type?: genericNotificationType;
+            type?: GenericNotificationType;
             url?: string;
             view?: string;
             actions?: Array<any>;
@@ -247,12 +252,12 @@ namespace umbraco.services {
             time?: Date;
         }
 
-        export enum genericNotificationType {
-            save = 0,
-            info = 1,
-            error = 2,
-            success = 3,
-            warning = 4
+        export enum GenericNotificationType {
+            Save = 0,
+            Info = 1,
+            Error = 2,
+            Success = 3,
+            Warning = 4
         }
     }
 }
@@ -263,5 +268,5 @@ angular
         "$rootScope",
         "$timeout",
         "angularHelper",
-        umbraco.services.notificationsService
+        umbraco.services.NotificationsService
     ]);
