@@ -1,37 +1,23 @@
-(function() {
-   'use strict';
+namespace umbraco.services {
+    export class OverlayHelper {
+        private numberOfOverlays: number = 0;
 
-   function overlayHelper() {
+        public registerOverlay() {
+            this.numberOfOverlays++;
+            return this.numberOfOverlays;
+        }
 
-      var numberOfOverlays = 0;
+        public unregisterOverlay() {
+            this.numberOfOverlays--;
+            return this.numberOfOverlays;
+        }
 
-      function registerOverlay() {
-         numberOfOverlays++;
-         return numberOfOverlays;
-      }
+        public getNumberOfOverlays() {
+            return this.numberOfOverlays;
+        }
+    }
+}
 
-      function unregisterOverlay() {
-         numberOfOverlays--;
-         return numberOfOverlays;
-      }
-
-      function getNumberOfOverlays() {
-         return numberOfOverlays;
-      }
-
-      var service = {
-         numberOfOverlays: numberOfOverlays,
-         registerOverlay: registerOverlay,
-         unregisterOverlay: unregisterOverlay,
-         getNumberOfOverlays: getNumberOfOverlays
-      };
-
-      return service;
-
-   }
-
-
-   angular.module('umbraco.services').factory('overlayHelper', overlayHelper);
-
-
-})();
+angular
+    .module("umbraco.services")
+    .factory("overlayHelper", umbraco.services.OverlayHelper);
