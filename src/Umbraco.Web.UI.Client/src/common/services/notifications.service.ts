@@ -3,6 +3,22 @@
 /// <reference path="../definitions/string.ts" />
 
 namespace umbraco.services {
+    export enum NotificationType {
+        Info = "info",
+        Error = "error",
+        Success = "success",
+        Warning = "warning",
+        Form = "form"
+    }
+
+    export enum GenericNotificationType {
+        Save = 0,
+        Info = 1,
+        Error = 2,
+        Success = 3,
+        Warning = 4
+    }
+
     /**
      * @ngdoc service
      * @name umbraco.services.notificationsService
@@ -26,7 +42,6 @@ namespace umbraco.services {
      *      notificationsService.error("Document Failed", "booooh");
      * </pre>
      */
-
     export class NotificationsService {
         private nArray: Array<any> = new Array<any>();
 
@@ -51,7 +66,7 @@ namespace umbraco.services {
                 if (item.view) {
                     item.view = this.setViewPath(item.view);
                     item.sticky = true;
-                    item.type = models.NotificationType.Form;
+                    item.type = NotificationType.Form;
                     item.headline = null;
                 }
 
@@ -122,19 +137,19 @@ namespace umbraco.services {
             }
 
             switch (notification.type) {
-                case models.GenericNotificationType.Save:
+                case GenericNotificationType.Save:
                     this.success(notification.header, notification.message);
                     break;
-                case models.GenericNotificationType.Info:
+                case GenericNotificationType.Info:
                     this.success(notification.header, notification.message);
                     break;
-                case models.GenericNotificationType.Error:
+                case GenericNotificationType.Error:
                     this.error(notification.header, notification.message);
                     break;
-                case models.GenericNotificationType.Success:
+                case GenericNotificationType.Success:
                     this.success(notification.header, notification.message);
                     break;
-                case models.GenericNotificationType.Warning:
+                case GenericNotificationType.Warning:
                     this.warning(notification.header, notification.message);
                     break;
             }
@@ -144,7 +159,7 @@ namespace umbraco.services {
             return this.add({
                 headline: headline,
                 message: message,
-                type: models.NotificationType.Success,
+                type: NotificationType.Success,
                 time: new Date()
             });
         }
@@ -153,7 +168,7 @@ namespace umbraco.services {
             return this.add({
                 headline: headline,
                 message: message,
-                type: models.NotificationType.Error,
+                type: NotificationType.Error,
                 time: new Date()
             });
         }
@@ -162,7 +177,7 @@ namespace umbraco.services {
             return this.add({
                 headline: headline,
                 message: message,
-                type: models.NotificationType.Warning,
+                type: NotificationType.Warning,
                 time: new Date()
             });
         }
@@ -171,7 +186,7 @@ namespace umbraco.services {
             return this.add({
                 headline: headline,
                 message: message,
-                type: models.NotificationType.Info,
+                type: NotificationType.Info,
                 time: new Date()
             });
         }
@@ -232,14 +247,6 @@ namespace umbraco.services {
             args?: Array<any>;
         }
 
-        export enum NotificationType {
-            Info = "info",
-            Error = "error",
-            Success = "success",
-            Warning = "warning",
-            Form = "form"
-        }
-
         // TODO: These are only mildly differnt from the above, ideally they could be merged?
         export interface iGenericNotification {
             header?: string;
@@ -250,14 +257,6 @@ namespace umbraco.services {
             actions?: Array<any>;
             sticky?: boolean;
             time?: Date;
-        }
-
-        export enum GenericNotificationType {
-            Save = 0,
-            Info = 1,
-            Error = 2,
-            Success = 3,
-            Warning = 4
         }
     }
 }
