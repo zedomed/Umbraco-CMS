@@ -2,7 +2,7 @@
  * @ngdoc service
  * @name umbraco.services.searchService
  *
- *  
+ *
  * @description
  * Service for handling the main application search, can currently search content, media and members
  *
@@ -15,146 +15,202 @@
  *          angular.forEach(results, function(result){
  *                  //returns:
  *                  {name: "name", id: 1234, menuUrl: "url", editorPath: "url", metaData: {}, subtitle: "/path/etc" }
- *           })          
- *           var result = 
- *       }) 
- * </pre> 
+ *           })
+ *           var result =
+ *       })
+ * </pre>
  */
-angular.module('umbraco.services')
-    .factory('searchService', function ($q, $log, entityResource, contentResource, umbRequestHelper, $injector, searchResultFormatter) {
+namespace umbraco.services.Search {
+    export interface SearchArgs {
+        term: string;
+        searchFrom?: any; // is this a typo? Search form?
+        canceler?: any; // Shouldn't this be canceller?
+    }
 
-        return {
+    export enum SearchType {
+        Members = "Member",
+        Content = "Document",
+        Media = "Media"
+    }
 
-            /**
-            * @ngdoc method
-            * @name umbraco.services.searchService#searchMembers
-            * @methodOf umbraco.services.searchService
-            *
-            * @description
-            * Searches the default member search index
-            * @param {Object} args argument object
-            * @param {String} args.term seach term
-            * @returns {Promise} returns promise containing all matching members
-            */
-            searchMembers: function (args) {
+    export class SearchService {
+        private $q: any;
+        private $log: any;
+        private entityResource: any;
+        private contentResource: any;
+        private umbRequestHelper: any;
+        private $injector: any;
+        private searchResultFormatter: any;
 
-                if (!args.term) {
-                    throw "args.term is required";
-                }
+        constructor(
+            $q,
+            $log,
+            entityResource,
+            contentResource,
+            umbRequestHelper,
+            $injector,
+            searchResultFormatter
+        ) {
+            this.$q = $q;
+            this.entityResource = entityResource;
+            this.contentResource = contentResource;
+            this.umbRequestHelper = umbRequestHelper;
+            this.$injector = $injector;
+            this.searchResultFormatter = searchResultFormatter;
+        }
 
-                return entityResource.search(args.term, "Member", args.searchFrom).then(function (data) {
-                    _.each(data, function (item) {
-                        searchResultFormatter.configureMemberResult(item);
+        /**
+         * @ngdoc method
+         * @name umbraco.services.searchService#searchMembers
+         * @methodOf umbraco.services.searchService
+         *
+         * @description
+         * Searches the default member search index
+         * @param {Object} args argument object
+         * @param {String} args.term seach term
+         * @returns {Promise} returns promise containing all matching members
+         */
+        public searchMembers(args: SearchArgs) {
+            if (!args.term) {
+                throw "args.term is required";
+            }
+
+            return this.entityResource
+                .search(args.term, SearchType.Members, args.searchFrom)
+                .then(function(data) {
+                    _.each(data, function(item) {
+                        this.searchResultFormatter.configureMemberResult(item);
                     });
                     return data;
                 });
-            },
+        }
 
-            /**
-            * @ngdoc method
-            * @name umbraco.services.searchService#searchContent
-            * @methodOf umbraco.services.searchService
-            *
-            * @description
-            * Searches the default internal content search index
-            * @param {Object} args argument object
-            * @param {String} args.term seach term
-            * @returns {Promise} returns promise containing all matching content items
-            */
-            searchContent: function (args) {
+        /**
+         * @ngdoc method
+         * @name umbraco.services.searchService#searchContent
+         * @methodOf umbraco.services.searchService
+         *
+         * @description
+         * Searches the default internal content search index
+         * @param {Object} args argument object
+         * @param {String} args.term seach term
+         * @returns {Promise} returns promise containing all matching content items
+         */
+        public searchContent(args: SearchArgs) {
+            if (!args.term) {
+                throw "args.term is required";
+            }
 
-                if (!args.term) {
-                    throw "args.term is required";
-                }
-
-                return entityResource.search(args.term, "Document", args.searchFrom, args.canceler).then(function (data) {
-                    _.each(data, function (item) {
-                        searchResultFormatter.configureContentResult(item);
+            return this.entityResource
+                .search(
+                    args.term,
+                    SearchType.Content,
+                    args.searchFrom,
+                    args.canceler
+                )
+                .then(function(data) {
+                    _.each(data, function(item) {
+                        this.searchResultFormatter.configureContentResult(item);
                     });
                     return data;
                 });
-            },
+        }
 
-            /**
-            * @ngdoc method
-            * @name umbraco.services.searchService#searchMedia
-            * @methodOf umbraco.services.searchService
-            *
-            * @description
-            * Searches the default media search index
-            * @param {Object} args argument object
-            * @param {String} args.term seach term
-            * @returns {Promise} returns promise containing all matching media items
-            */
-            searchMedia: function (args) {
+        /**
+         * @ngdoc method
+         * @name umbraco.services.searchService#searchMedia
+         * @methodOf umbraco.services.searchService
+         *
+         * @description
+         * Searches the default media search index
+         * @param {Object} args argument object
+         * @param {String} args.term seach term
+         * @returns {Promise} returns promise containing all matching media items
+         */
+        public searchMedia(args: SearchArgs) {
+            if (!args.term) {
+                throw "args.term is required";
+            }
 
-                if (!args.term) {
-                    throw "args.term is required";
-                }
-
-                return entityResource.search(args.term, "Media", args.searchFrom).then(function (data) {
-                    _.each(data, function (item) {
-                        searchResultFormatter.configureMediaResult(item);
+            return this.entityResource
+                .search(args.term, SearchType.Media, args.searchFrom)
+                .then(function(data) {
+                    _.each(data, function(item) {
+                        this.searchResultFormatter.configureMediaResult(item);
                     });
                     return data;
                 });
-            },
+        }
 
-            /**
-            * @ngdoc method
-            * @name umbraco.services.searchService#searchAll
-            * @methodOf umbraco.services.searchService
-            *
-            * @description
-            * Searches all available indexes and returns all results in one collection
-            * @param {Object} args argument object
-            * @param {String} args.term seach term
-            * @returns {Promise} returns promise containing all matching items
-            */
-            searchAll: function (args) {
+        /**
+         * @ngdoc method
+         * @name umbraco.services.searchService#searchAll
+         * @methodOf umbraco.services.searchService
+         *
+         * @description
+         * Searches all available indexes and returns all results in one collection
+         * @param {Object} args argument object
+         * @param {String} args.term seach term
+         * @returns {Promise} returns promise containing all matching items
+         */
+        public searchAll(args: SearchArgs) {
+            if (!args.term) {
+                throw "args.term is required";
+            }
 
-                if (!args.term) {
-                    throw "args.term is required";
-                }
-
-                return entityResource.searchAll(args.term, args.canceler).then(function (data) {
-
-                    _.each(data, function (resultByType) {
-
+            return this.entityResource
+                .searchAll(args.term, args.canceler)
+                .then(function(data) {
+                    _.each(data, function(resultByType) {
                         //we need to format the search result data to include things like the subtitle, urls, etc...
-                        // this is done with registered angular services as part of the SearchableTreeAttribute, if that 
+                        // this is done with registered angular services as part of the SearchableTreeAttribute, if that
                         // is not found, than we format with the default formatter
-                        var formatterMethod = searchResultFormatter.configureDefaultResult;
+                        var formatterMethod = this.searchResultFormatter
+                            .configureDefaultResult;
                         //check if a custom formatter is specified...
                         if (resultByType.jsSvc) {
-                            var searchFormatterService = $injector.get(resultByType.jsSvc);
+                            var searchFormatterService = this.$injector.get(
+                                resultByType.jsSvc
+                            );
                             if (searchFormatterService) {
                                 if (!resultByType.jsMethod) {
                                     resultByType.jsMethod = "format";
                                 }
-                                formatterMethod = searchFormatterService[resultByType.jsMethod];
+                                formatterMethod =
+                                    searchFormatterService[
+                                        resultByType.jsMethod
+                                    ];
 
                                 if (!formatterMethod) {
-                                    throw "The method " + resultByType.jsMethod + " on the angular service " + resultByType.jsSvc + " could not be found";
+                                    throw "The method " +
+                                        resultByType.jsMethod +
+                                        " on the angular service " +
+                                        resultByType.jsSvc +
+                                        " could not be found";
                                 }
                             }
                         }
                         //now apply the formatter for each result
-                        _.each(resultByType.results, function (item) {
-                            formatterMethod.apply(this, [item, resultByType.treeAlias, resultByType.appAlias]);
+                        _.each(resultByType.results, function(item) {
+                            formatterMethod.apply(this, [
+                                item,
+                                resultByType.treeAlias,
+                                resultByType.appAlias
+                            ]);
                         });
-                        
                     });
 
                     return data;
                 });
+        }
 
-            },
+        // TODO: This doesn't do anything!
+        public setCurrent(sectionAlias: string) {
+            var currentSection = sectionAlias;
+        }
+    }
+}
 
-            // TODO: This doesn't do anything!
-            setCurrent: function (sectionAlias) {
-
-                var currentSection = sectionAlias;
-            }
-        };
-    });
+angular
+    .module("umbraco.services")
+    .factory("searchService", umbraco.services.Search.SearchService);
