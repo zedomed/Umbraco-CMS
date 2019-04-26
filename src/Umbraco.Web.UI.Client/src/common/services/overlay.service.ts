@@ -32,13 +32,13 @@ namespace umbraco.services {
         private eventsService: any;
         private currentOverlay: models.Overlay;
 
-        public constructor(eventsService, backdropService) {
+        public constructor(eventsService: any, backdropService: any) {
             this.eventsService = eventsService;
             this.backdropService = backdropService;
             this.currentOverlay = null;
         }
 
-        public open(newOverlay) {
+        public open(newOverlay: models.Overlay) {
             // prevent two open overlays at the same time
             if (this.currentOverlay) {
                 close();
