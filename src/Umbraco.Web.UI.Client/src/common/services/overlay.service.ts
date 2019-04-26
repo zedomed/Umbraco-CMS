@@ -5,32 +5,30 @@
  * @description
  * <b>Added in Umbraco 8.0</b>. Application-wide service for handling overlays.
  */
-namespace umbraco.services {
+namespace umbraco.services.Overlays {
     // TODO: Move this to the appstate.service.js
     export enum AppState {
         Overlay = "appState.overlay"
     }
 
-    export namespace models {
-        export interface Overlay {
-            // TODO: These optional fields are a bit dirty, for instance for booleans I suspect its using the lack of them being on an object as them being false (more like falsey), ideally should have to set them so we can make them no optional and TypeScript will let us know about it
-            position?: string;
-            view: string;
-            disableBackdropClick?: boolean;
-            show?: boolean;
-            error?: any;
-            close(): void;
-        }
+    export interface Overlay {
+        // TODO: These optional fields are a bit dirty, for instance for booleans I suspect its using the lack of them being on an object as them being false (more like falsey), ideally should have to set them so we can make them no optional and TypeScript will let us know about it
+        position?: string;
+        view: string;
+        disableBackdropClick?: boolean;
+        show?: boolean;
+        error?: any;
+        close(): void;
+    }
 
-        export interface BackDropOptions {
-            disableEventsOnClick: boolean;
-        }
+    export interface BackDropOptions {
+        disableEventsOnClick: boolean;
     }
 
     export class OverlayService {
         private backdropService: any;
         private eventsService: any;
-        private currentOverlay: models.Overlay;
+        private currentOverlay: Overlay;
 
         public constructor(eventsService: any, backdropService: any) {
             this.eventsService = eventsService;
@@ -38,17 +36,17 @@ namespace umbraco.services {
             this.currentOverlay = null;
         }
 
-        public open(newOverlay: models.Overlay) {
+        public open(newOverlay: Overlay) {
             // prevent two open overlays at the same time
             if (this.currentOverlay) {
                 close();
             }
 
-            var backdropOptions: models.BackDropOptions = {
+            var backdropOptions: BackDropOptions = {
                 disableEventsOnClick: false
             };
 
-            var overlay: models.Overlay = newOverlay;
+            var overlay: Overlay = newOverlay;
 
             // set the default overlay position to center
             if (!overlay.position) {
@@ -78,7 +76,7 @@ namespace umbraco.services {
         }
 
         public ysod(error: any) {
-            var overlay: models.Overlay = {
+            var overlay: Overlay = {
                 view: "views/common/overlays/ysod/ysod.html",
                 error: error,
                 close: function() {
@@ -92,4 +90,4 @@ namespace umbraco.services {
 
 angular
     .module("umbraco.services")
-    .factory("overlayService", umbraco.services.OverlayService);
+    .factory("overlayService", umbraco.services.Overlays.OverlayService);
