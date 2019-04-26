@@ -15,16 +15,20 @@ namespace umbraco.services {
         FormSubmitted = "formSubmitted"
     }
 
+    export interface FormSubmissionOptions {
+        scope: any;
+    }
+
     export class FormHelper {
         private angularHelper: umbraco.services.angularHelper;
         private serverValidationManager: any; // TODO: add the type to this once we've actually converted it
-        private notificationsService: umbraco.services.NotificationsService;
+        private notificationsService: umbraco.services.Notifications.NotificationsService;
         private overlayService: any; // TODO: add the type to this once we've actually converted it
 
         public constructor(
             angularHelper: umbraco.services.angularHelper,
             serverValidationManager: any,
-            notificationsService: umbraco.services.NotificationsService,
+            notificationsService: umbraco.services.Notifications.NotificationsService,
             overlayService: any
         ) {
             this.angularHelper = angularHelper;
@@ -46,7 +50,7 @@ namespace umbraco.services {
          *
          * @param {object} args An object containing arguments for form submission
          */
-        public submitForm(args: models.iFormSubmissionData) {
+        public submitForm(args: FormSubmissionData) {
             var currentForm;
 
             if (!args) {
@@ -94,7 +98,7 @@ namespace umbraco.services {
          *
          * @param {object} args An object containing arguments for form submission
          */
-        public resetForm(args: models.iHasScope) {
+        public resetForm(args: FormSubmissionOptions) {
             if (!args) {
                 throw "args cannot be null";
             }
@@ -107,7 +111,7 @@ namespace umbraco.services {
             });
         }
 
-        public showNotifications(args: models.iShowNotificationsArgs) {
+        public showNotifications(args: ShowNotificationsArgs) {
             if (!args || !args.notifications) {
                 return false;
             }
@@ -229,21 +233,17 @@ namespace umbraco.services {
         }
     }
 
-    // Alias the new uppercased version of the class to the old version for backwards compat to
-    // anything out there in the wild that might still be referencing it
-    export type formsHelper = FormHelper;
+    export interface FormSubmissionData {
+        scope: any;
+        formCtrl?: any;
+        skipValidation?: boolean;
+        action: any;
+    }
 
-    export namespace models {
-        export interface iFormSubmissionData {
-            scope: any;
-            formCtrl?: any;
-            skipValidation?: boolean;
-            action: any;
-        }
-
-        export interface iShowNotificationsArgs {
-            notifications: Array<umbraco.services.models.iGenericNotification>;
-        }
+    export interface ShowNotificationsArgs {
+        notifications: Array<
+            umbraco.services.Notifications.GenericNotification
+        >;
     }
 }
 

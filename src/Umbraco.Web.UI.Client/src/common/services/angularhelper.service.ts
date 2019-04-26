@@ -131,12 +131,6 @@ module umbraco.services {
             };
         }
     }
-
-    export namespace models {
-        export interface iHasScope {
-            scope: any;
-        }
-    }
 }
 
 angular
