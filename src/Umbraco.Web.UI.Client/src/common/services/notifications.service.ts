@@ -2,7 +2,8 @@
 /// <reference path="angularhelper.service.ts" />
 /// <reference path="../definitions/string.ts" />
 
-namespace umbraco.services {
+namespace umbraco.services.Notifications {
+    // TODO: These are the same type really and should be merged
     export enum NotificationType {
         Info = "info",
         Error = "error",
@@ -17,6 +18,31 @@ namespace umbraco.services {
         Error = 2,
         Success = 3,
         Warning = 4
+    }
+
+    export interface Notification {
+        id?: string;
+        headline?: string;
+        message?: string;
+        type?: NotificationType;
+        url?: string;
+        view?: string;
+        actions?: Array<any>;
+        sticky?: boolean;
+        time?: Date;
+        args?: Array<any>;
+    }
+
+    // TODO: These are only mildly differnt from the above, ideally they could be merged?
+    export interface GenericNotification {
+        header?: string;
+        message?: string;
+        type?: GenericNotificationType;
+        url?: string;
+        view?: string;
+        actions?: Array<any>;
+        sticky?: boolean;
+        time?: Date;
     }
 
     /**
@@ -52,8 +78,8 @@ namespace umbraco.services {
         private angularHelper: umbraco.services.angularHelper;
 
         public constructor(
-            $rootScope,
-            $timeout,
+            $rootScope: any,
+            $timeout: any,
             angularHelper: umbraco.services.angularHelper
         ) {
             this.$rootScope = $rootScope;
@@ -61,7 +87,8 @@ namespace umbraco.services {
             this.angularHelper = angularHelper;
         }
 
-        public add(item: models.iNotification) {
+        public add(item: Notification) {
+            var pete = item.message;
             this.angularHelper.safeApply(this.$rootScope, function() {
                 if (item.view) {
                     item.view = this.setViewPath(item.view);
@@ -123,9 +150,7 @@ namespace umbraco.services {
             this.add(item);
         }
 
-        public showNotification(
-            notification: umbraco.services.models.iGenericNotification
-        ) {
+        public showNotification(notification: GenericNotification) {
             if (!notification) {
                 throw "notification cannot be null";
             }
@@ -225,40 +250,6 @@ namespace umbraco.services {
             return view;
         }
     }
-
-    // Alias the new uppercased version of the class to the old version for backwards compat to
-    // anything out there in the wild that might still be referencing it
-    export type notificationService = NotificationsService;
-
-    /*
-		Models for Notification Service
-	*/
-    export namespace models {
-        export interface iNotification {
-            id?: string;
-            headline?: string;
-            message?: string;
-            type?: NotificationType;
-            url?: string;
-            view?: string;
-            actions?: Array<any>;
-            sticky?: boolean;
-            time?: Date;
-            args?: Array<any>;
-        }
-
-        // TODO: These are only mildly differnt from the above, ideally they could be merged?
-        export interface iGenericNotification {
-            header?: string;
-            message?: string;
-            type?: GenericNotificationType;
-            url?: string;
-            view?: string;
-            actions?: Array<any>;
-            sticky?: boolean;
-            time?: Date;
-        }
-    }
 }
 
 angular
@@ -267,5 +258,5 @@ angular
         "$rootScope",
         "$timeout",
         "angularHelper",
-        umbraco.services.NotificationsService
+        umbraco.services.Notifications.NotificationsService
     ]);
