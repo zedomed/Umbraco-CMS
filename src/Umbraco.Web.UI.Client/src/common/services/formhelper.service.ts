@@ -134,7 +134,7 @@ namespace umbraco.services {
          *
          * @param {object} err The error object returned from the http promise
          */
-        public handleError(err: object) {
+        public handleError(err: any) {
             // TODO: Do we bother mapping out this error type into a TypeScript type?
             //When the status is a 400 status with a custom header: X-Status-Reason: Validation failed, we have validation errors.
             //Otherwise the error is probably due to invalid data (i.e. someone mucking around with the ids or something).
@@ -165,7 +165,7 @@ namespace umbraco.services {
          *
          * @param {object} err The error object returned from the http promise
          */
-        public handleServerValidation(modelState: object) {
+        public handleServerValidation(modelState: any) {
             for (var e in modelState) {
                 //This is where things get interesting....
                 // We need to support validation for all editor types such as both the content and content type editors.
