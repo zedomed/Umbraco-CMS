@@ -1,4 +1,4 @@
-﻿namespace umbraco.services {
+﻿namespace umbraco.services.AppState {
     export interface GlobalState {
         showNavigation: boolean;
         touchDevice: boolean;
@@ -153,14 +153,9 @@
         };
 
         /** function to validate and set the state on a state object */
-        private setState(
-            stateObj:
-                | GlobalState
-                | SectionState
-                | TreeState
-                | MenuState
-                | SearchState
-                | DrawerState,
+        // Using scary and rare index types there (see: https://www.typescriptlang.org/docs/handbook/advanced-types.html#index-types)
+        private setState<T, K extends keyof T>(
+            stateObj: T,
             key: string,
             value: any,
             stateObjName: string
@@ -185,7 +180,12 @@
         }
 
         /** function to validate and set the state on a state object */
-        private getState(stateObj, key, stateObjName) {
+        // Using scary and rare index types there (see: https://www.typescriptlang.org/docs/handbook/advanced-types.html#index-types)
+        private getState<T, K extends keyof T>(
+            stateObj: T,
+            key: K,
+            stateObjName: string
+        ): T[K] {
             if (!_.has(stateObj, key)) {
                 throw "The variable " +
                     key +
@@ -206,7 +206,9 @@
          * to be publicly mutable and allow setting arbitrary values
          *
          */
-        public getGlobalState(key: string) {
+        public getGlobalState<K extends keyof GlobalState>(
+            key: K
+        ): GlobalState[K] {
             return this.getState(this.globalState, key, "globalState");
         }
 
@@ -220,7 +222,10 @@
          * Sets a global state value by key
          *
          */
-        public setGlobalState(key: string, value: boolean) {
+        public setGlobalState<K extends keyof GlobalState>(
+            key: K,
+            value: GlobalState[K]
+        ) {
             this.setState(this.globalState, key, value, "globalState");
         }
 
@@ -235,7 +240,9 @@
          * to be publicly mutable and allow setting arbitrary values
          *
          */
-        public getSectionState(key: string) {
+        public getSectionState<K extends keyof SectionState>(
+            key: K
+        ): SectionState[K] {
             return this.getState(this.sectionState, key, "sectionState");
         }
 
@@ -249,7 +256,10 @@
          * Sets a section state value by key
          *
          */
-        public setSectionState(key: string, value: string | boolean) {
+        public setSectionState<K extends keyof SectionState>(
+            key: K,
+            value: SectionState[K]
+        ) {
             this.setState(this.sectionState, key, value, "sectionState");
         }
 
@@ -264,7 +274,7 @@
          * to be publicly mutable and allow setting arbitrary values
          *
          */
-        public getTreeState(key: string) {
+        public getTreeState<K extends keyof TreeState>(key: K): TreeState[K] {
             return this.getState(this.treeState, key, "treeState");
         }
 
@@ -278,7 +288,10 @@
          * Sets a section state value by key
          *
          */
-        public setTreeState(key: string, value: any) {
+        public setTreeState<K extends keyof TreeState>(
+            key: K,
+            value: TreeState[K]
+        ) {
             this.setState(this.treeState, key, value, "treeState");
         }
 
@@ -293,7 +306,7 @@
          * to be publicly mutable and allow setting arbitrary values
          *
          */
-        public getMenuState(key: string) {
+        public getMenuState<K extends keyof MenuState>(key: K): MenuState[K] {
             return this.getState(this.menuState, key, "menuState");
         }
 
@@ -307,7 +320,10 @@
          * Sets a section state value by key
          *
          */
-        public setMenuState(key: string, value: any) {
+        public setMenuState<K extends keyof MenuState>(
+            key: K,
+            value: MenuState[K]
+        ) {
             this.setState(this.menuState, key, value, "menuState");
         }
 
@@ -322,7 +338,9 @@
          * to be publicly mutable and allow setting arbitrary values
          *
          */
-        public getSearchState(key: string) {
+        public getSearchState<K extends keyof SearchState>(
+            key: K
+        ): SearchState[k] {
             return this.getState(this.searchState, key, "searchState");
         }
 
@@ -336,7 +354,10 @@
          * Sets a section state value by key
          *
          */
-        public setSearchState(key: string, value: boolean) {
+        public setSearchState<K extends keyof SearchState>(
+            key: K,
+            value: SearchState[K]
+        ) {
             this.setState(this.searchState, key, value, "searchState");
         }
 
@@ -351,7 +372,9 @@
          * to be publicly mutable and allow setting arbitrary values
          *
          */
-        public getDrawerState(key: string) {
+        public getDrawerState<K extends keyof DrawerState>(
+            key: K
+        ): DrawerState[K] {
             return this.getState(this.drawerState, key, "drawerState");
         }
 
@@ -365,7 +388,10 @@
          * Sets a drawer state value by key
          *
          */
-        public setDrawerState(key: string, value: any) {
+        public setDrawerState<K extends keyof DrawerState>(
+            key: K,
+            value: DrawerState[K]
+        ) {
             this.setState(this.drawerState, key, value, "drawerState");
         }
     }
