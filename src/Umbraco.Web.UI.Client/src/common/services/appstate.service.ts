@@ -1,4 +1,59 @@
 ﻿namespace umbraco.services {
+    export interface GlobalState {
+        showNavigation: boolean;
+        touchDevice: boolean;
+        showTray: boolean;
+        stickyNavigation: boolean;
+        navMode: boolean;
+        isReady: boolean;
+        isTablet: boolean;
+    }
+
+    export interface SectionState {
+        //The currently active section
+        currentSection: string;
+        showSearchResults: boolean;
+    }
+
+    export interface TreeState {
+        //The currently selected node
+        selectedNode: any;
+        //The currently loaded root node reference - depending on the section loaded this could be a section root or a normal root.
+        //We keep this reference so we can lookup nodes to interact with in the UI via the tree service
+        currentRootNode: any;
+    }
+
+    export interface MenuState {
+        // The list of menu items to display
+        menuActions: any;
+        // The title to display in the context menu dialog
+        dialogTitle: string;
+        // The tree node that the ctx menu is launched for
+        currentNode: any;
+        // Whether the menu's dialog is being shown or not
+        showMenuDialog: boolean;
+        // Whether the menu's dialog can be hidden or not
+        allowHideMenuDialog: boolean;
+        // The dialogs template
+        dialogTemplateUrl: string;
+        //Whether the context menu is being shown or not
+        showMenu: boolean;
+    }
+
+    export interface SearchState {
+        //Whether the search is being shown or not
+        show: boolean;
+    }
+
+    export interface DrawerState {
+        //this view to show
+        view: string;
+        // bind custom values to the drawer
+        model: any;
+        //Whether the drawer is being shown or not
+        showDrawer: boolean;
+    }
+
     /**
      * @ngdoc service
      * @name umbraco.services.appState
@@ -33,7 +88,7 @@
      *           });
      * </pre>
      */
-    class AppState {
+    export class AppState {
         private eventsService: any;
 
         constructor(eventsService) {
@@ -42,7 +97,7 @@
         //Define all variables here - we are never returning this objects so they cannot be publicly mutable
         // changed, we only expose methods to interact with the values.
 
-        private globalState: object = {
+        private globalState: GlobalState = {
             showNavigation: null,
             touchDevice: null,
             showTray: null,
@@ -52,13 +107,13 @@
             isTablet: null
         };
 
-        private sectionState: object = {
+        private sectionState: SectionState = {
             //The currently active section
             currentSection: null,
             showSearchResults: null
         };
 
-        private treeState: object = {
+        private treeState: TreeState = {
             //The currently selected node
             selectedNode: null,
             //The currently loaded root node reference - depending on the section loaded this could be a section root or a normal root.
@@ -66,7 +121,7 @@
             currentRootNode: null
         };
 
-        private menuState: object = {
+        private menuState: MenuState = {
             // The list of menu items to display
             menuActions: null,
             // The title to display in the context menu dialog
@@ -83,12 +138,12 @@
             showMenu: null
         };
 
-        private searchState: object = {
+        private searchState: SearchState = {
             //Whether the search is being shown or not
             show: null
         };
 
-        private drawerState: object = {
+        private drawerState: DrawerState = {
             //this view to show
             view: null,
             // bind custom values to the drawer
@@ -98,7 +153,18 @@
         };
 
         /** function to validate and set the state on a state object */
-        private setState(stateObj, key, value, stateObjName) {
+        private setState(
+            stateObj:
+                | GlobalState
+                | SectionState
+                | TreeState
+                | MenuState
+                | SearchState
+                | DrawerState,
+            key: string,
+            value: any,
+            stateObjName: string
+        ) {
             if (!_.has(stateObj, key)) {
                 throw "The variable " +
                     key +
@@ -154,7 +220,7 @@
          * Sets a global state value by key
          *
          */
-        public setGlobalState(key: string, value) {
+        public setGlobalState(key: string, value: boolean) {
             this.setState(this.globalState, key, value, "globalState");
         }
 
@@ -183,7 +249,7 @@
          * Sets a section state value by key
          *
          */
-        public setSectionState(key: string, value) {
+        public setSectionState(key: string, value: string | boolean) {
             this.setState(this.sectionState, key, value, "sectionState");
         }
 
@@ -198,7 +264,7 @@
          * to be publicly mutable and allow setting arbitrary values
          *
          */
-        public getTreeStat(key: string) {
+        public getTreeState(key: string) {
             return this.getState(this.treeState, key, "treeState");
         }
 
@@ -212,7 +278,7 @@
          * Sets a section state value by key
          *
          */
-        public setTreeState(key: string, value) {
+        public setTreeState(key: string, value: any) {
             this.setState(this.treeState, key, value, "treeState");
         }
 
@@ -241,7 +307,7 @@
          * Sets a section state value by key
          *
          */
-        public setMenuState(key: string, value) {
+        public setMenuState(key: string, value: any) {
             this.setState(this.menuState, key, value, "menuState");
         }
 
@@ -270,7 +336,7 @@
          * Sets a section state value by key
          *
          */
-        public setSearchState(key: string, value) {
+        public setSearchState(key: string, value: boolean) {
             this.setState(this.searchState, key, value, "searchState");
         }
 
@@ -285,7 +351,7 @@
          * to be publicly mutable and allow setting arbitrary values
          *
          */
-        public getDrawerState(key:string) {
+        public getDrawerState(key: string) {
             return this.getState(this.drawerState, key, "drawerState");
         }
 
@@ -299,7 +365,7 @@
          * Sets a drawer state value by key
          *
          */
-        public setDrawerState(key:string, value) {
+        public setDrawerState(key: string, value: any) {
             this.setState(this.drawerState, key, value, "drawerState");
         }
     }
