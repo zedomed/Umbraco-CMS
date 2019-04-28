@@ -1,118 +1,133 @@
-﻿/**
- * @ngdoc service
- * @name umbraco.services.appState
- * @function
- *
- * @description
- * Tracks the various application state variables when working in the back office, raises events when state changes.
- *
- * ##Samples
- *
- * ####Subscribe to global state changes:
- * 
- * <pre>
-  *    scope.showTree = appState.getGlobalState("showNavigation");
-  *
-  *    eventsService.on("appState.globalState.changed", function (e, args) {
-  *               if (args.key === "showNavigation") {
-  *                   scope.showTree = args.value;
-  *               }
-  *           });  
-  * </pre>
- *
- * ####Subscribe to section-state changes
- *
- * <pre>
- *    scope.currentSection = appState.getSectionState("currentSection");
- *
- *    eventsService.on("appState.sectionState.changed", function (e, args) {
- *               if (args.key === "currentSection") {
- *                   scope.currentSection = args.value;
- *               }
- *           });  
- * </pre>
- */
-function appState(eventsService) {
-    
-    //Define all variables here - we are never returning this objects so they cannot be publicly mutable
-    // changed, we only expose methods to interact with the values.
+﻿namespace umbraco.services {
+    /**
+     * @ngdoc service
+     * @name umbraco.services.appState
+     * @function
+     *
+     * @description
+     * Tracks the various application state variables when working in the back office, raises events when state changes.
+     *
+     * ##Samples
+     *
+     * ####Subscribe to global state changes:
+     *
+     * <pre>
+     *    scope.showTree = appState.getGlobalState("showNavigation");
+     *
+     *    eventsService.on("appState.globalState.changed", function (e, args) {
+     *               if (args.key === "showNavigation") {
+     *                   scope.showTree = args.value;
+     *               }
+     *           });
+     * </pre>
+     *
+     * ####Subscribe to section-state changes
+     *
+     * <pre>
+     *    scope.currentSection = appState.getSectionState("currentSection");
+     *
+     *    eventsService.on("appState.sectionState.changed", function (e, args) {
+     *               if (args.key === "currentSection") {
+     *                   scope.currentSection = args.value;
+     *               }
+     *           });
+     * </pre>
+     */
+    class AppState {
+        private eventsService: any;
 
-    var globalState = {
-        showNavigation: null,
-        touchDevice: null,
-        showTray: null,
-        stickyNavigation: null,
-        navMode: null,
-        isReady: null,
-        isTablet: null
-    };
-    
-    var sectionState = {
-        //The currently active section
-        currentSection: null,
-        showSearchResults: null
-    };
-
-    var treeState = {
-        //The currently selected node
-        selectedNode: null,
-        //The currently loaded root node reference - depending on the section loaded this could be a section root or a normal root.
-        //We keep this reference so we can lookup nodes to interact with in the UI via the tree service
-        currentRootNode: null
-    };
-    
-    var menuState = {
-        //this list of menu items to display
-        menuActions: null,
-        //the title to display in the context menu dialog
-        dialogTitle: null,
-        //The tree node that the ctx menu is launched for
-        currentNode: null,
-        //Whether the menu's dialog is being shown or not
-        showMenuDialog: null,
-        //Whether the menu's dialog can be hidden or not
-        allowHideMenuDialog: true,
-        // The dialogs template
-        dialogTemplateUrl: null,
-        //Whether the context menu is being shown or not
-        showMenu: null
-    };
-
-    var searchState = {
-        //Whether the search is being shown or not
-        show: null
-    };
-
-    var drawerState = {
-        //this view to show
-        view: null,
-        // bind custom values to the drawer
-        model: null,
-        //Whether the drawer is being shown or not
-        showDrawer: null
-    };
-
-    /** function to validate and set the state on a state object */
-    function setState(stateObj, key, value, stateObjName) {
-        if (!_.has(stateObj, key)) {
-            throw "The variable " + key + " does not exist in " + stateObjName;
+        constructor(eventsService) {
+            this.eventsService = eventsService;
         }
-        var changed = stateObj[key] !== value;
-        stateObj[key] = value;
-        if (changed) {
-            eventsService.emit("appState." + stateObjName + ".changed", { key: key, value: value });
-        }
-    }
-    
-    /** function to validate and set the state on a state object */
-    function getState(stateObj, key, stateObjName) {
-        if (!_.has(stateObj, key)) {
-            throw "The variable " + key + " does not exist in " + stateObjName;
-        }
-        return stateObj[key];
-    }
+        //Define all variables here - we are never returning this objects so they cannot be publicly mutable
+        // changed, we only expose methods to interact with the values.
 
-    return {
+        private globalState: object = {
+            showNavigation: null,
+            touchDevice: null,
+            showTray: null,
+            stickyNavigation: null,
+            navMode: null,
+            isReady: null,
+            isTablet: null
+        };
+
+        private sectionState: object = {
+            //The currently active section
+            currentSection: null,
+            showSearchResults: null
+        };
+
+        private treeState: object = {
+            //The currently selected node
+            selectedNode: null,
+            //The currently loaded root node reference - depending on the section loaded this could be a section root or a normal root.
+            //We keep this reference so we can lookup nodes to interact with in the UI via the tree service
+            currentRootNode: null
+        };
+
+        private menuState: object = {
+            // The list of menu items to display
+            menuActions: null,
+            // The title to display in the context menu dialog
+            dialogTitle: null,
+            // The tree node that the ctx menu is launched for
+            currentNode: null,
+            // Whether the menu's dialog is being shown or not
+            showMenuDialog: null,
+            // Whether the menu's dialog can be hidden or not
+            allowHideMenuDialog: true,
+            // The dialogs template
+            dialogTemplateUrl: null,
+            //Whether the context menu is being shown or not
+            showMenu: null
+        };
+
+        private searchState: object = {
+            //Whether the search is being shown or not
+            show: null
+        };
+
+        private drawerState: object = {
+            //this view to show
+            view: null,
+            // bind custom values to the drawer
+            model: null,
+            //Whether the drawer is being shown or not
+            showDrawer: null
+        };
+
+        /** function to validate and set the state on a state object */
+        private setState(stateObj, key, value, stateObjName) {
+            if (!_.has(stateObj, key)) {
+                throw "The variable " +
+                    key +
+                    " does not exist in " +
+                    stateObjName;
+            }
+            var changed = stateObj[key] !== value;
+            stateObj[key] = value;
+            if (changed) {
+                this.eventsService.emit(
+                    "appState." + stateObjName + ".changed",
+                    {
+                        key: key,
+                        value: value
+                    }
+                );
+            }
+        }
+
+        /** function to validate and set the state on a state object */
+        private getState(stateObj, key, stateObjName) {
+            if (!_.has(stateObj, key)) {
+                throw "The variable " +
+                    key +
+                    " does not exist in " +
+                    stateObjName;
+            }
+            return stateObj[key];
+        }
 
         /**
          * @ngdoc function
@@ -125,9 +140,9 @@ function appState(eventsService) {
          * to be publicly mutable and allow setting arbitrary values
          *
          */
-        getGlobalState: function (key) {
-            return getState(globalState, key, "globalState");
-        },
+        public getGlobalState(key: string) {
+            return this.getState(this.globalState, key, "globalState");
+        }
 
         /**
          * @ngdoc function
@@ -139,9 +154,9 @@ function appState(eventsService) {
          * Sets a global state value by key
          *
          */
-        setGlobalState: function (key, value) {
-            setState(globalState, key, value, "globalState");
-        },
+        public setGlobalState(key: string, value) {
+            this.setState(this.globalState, key, value, "globalState");
+        }
 
         /**
          * @ngdoc function
@@ -154,10 +169,10 @@ function appState(eventsService) {
          * to be publicly mutable and allow setting arbitrary values
          *
          */
-        getSectionState: function (key) {
-            return getState(sectionState, key, "sectionState");            
-        },
-        
+        public getSectionState(key: string) {
+            return this.getState(this.sectionState, key, "sectionState");
+        }
+
         /**
          * @ngdoc function
          * @name umbraco.services.angularHelper#setSectionState
@@ -168,9 +183,9 @@ function appState(eventsService) {
          * Sets a section state value by key
          *
          */
-        setSectionState: function(key, value) {
-            setState(sectionState, key, value, "sectionState");
-        },
+        public setSectionState(key: string, value) {
+            this.setState(this.sectionState, key, value, "sectionState");
+        }
 
         /**
          * @ngdoc function
@@ -183,10 +198,10 @@ function appState(eventsService) {
          * to be publicly mutable and allow setting arbitrary values
          *
          */
-        getTreeState: function (key) {
-            return getState(treeState, key, "treeState");
-        },
-        
+        public getTreeStat(key: string) {
+            return this.getState(this.treeState, key, "treeState");
+        }
+
         /**
          * @ngdoc function
          * @name umbraco.services.angularHelper#setTreeState
@@ -197,9 +212,9 @@ function appState(eventsService) {
          * Sets a section state value by key
          *
          */
-        setTreeState: function (key, value) {
-            setState(treeState, key, value, "treeState");
-        },
+        public setTreeState(key: string, value) {
+            this.setState(this.treeState, key, value, "treeState");
+        }
 
         /**
          * @ngdoc function
@@ -212,10 +227,10 @@ function appState(eventsService) {
          * to be publicly mutable and allow setting arbitrary values
          *
          */
-        getMenuState: function (key) {
-            return getState(menuState, key, "menuState");
-        },
-        
+        public getMenuState(key: string) {
+            return this.getState(this.menuState, key, "menuState");
+        }
+
         /**
          * @ngdoc function
          * @name umbraco.services.angularHelper#setMenuState
@@ -226,9 +241,9 @@ function appState(eventsService) {
          * Sets a section state value by key
          *
          */
-        setMenuState: function (key, value) {
-            setState(menuState, key, value, "menuState");
-        },
+        public setMenuState(key: string, value) {
+            this.setState(this.menuState, key, value, "menuState");
+        }
 
         /**
          * @ngdoc function
@@ -241,10 +256,10 @@ function appState(eventsService) {
          * to be publicly mutable and allow setting arbitrary values
          *
          */
-        getSearchState: function (key) {
-            return getState(searchState, key, "searchState");
-        },
-        
+        public getSearchState(key: string) {
+            return this.getState(this.searchState, key, "searchState");
+        }
+
         /**
          * @ngdoc function
          * @name umbraco.services.angularHelper#setSearchState
@@ -255,9 +270,9 @@ function appState(eventsService) {
          * Sets a section state value by key
          *
          */
-        setSearchState: function (key, value) {
-            setState(searchState, key, value, "searchState");
-        },
+        public setSearchState(key: string, value) {
+            this.setState(this.searchState, key, value, "searchState");
+        }
 
         /**
          * @ngdoc function
@@ -270,9 +285,9 @@ function appState(eventsService) {
          * to be publicly mutable and allow setting arbitrary values
          *
          */
-        getDrawerState: function (key) {
-            return getState(drawerState, key, "drawerState");
-        },
+        public getDrawerState(key:string) {
+            return this.getState(this.drawerState, key, "drawerState");
+        }
 
         /**
          * @ngdoc function
@@ -284,10 +299,12 @@ function appState(eventsService) {
          * Sets a drawer state value by key
          *
          */
-        setDrawerState: function (key, value) {
-            setState(drawerState, key, value, "drawerState");
+        public setDrawerState(key:string, value) {
+            this.setState(this.drawerState, key, value, "drawerState");
         }
-
-    };
+    }
 }
-angular.module('umbraco.services').factory('appState', appState);
+
+angular
+    .module("umbraco.services")
+    .factory("appState", umbraco.services.AppState);
