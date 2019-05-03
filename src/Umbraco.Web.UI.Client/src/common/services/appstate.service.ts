@@ -340,7 +340,7 @@
          */
         public getSearchState<K extends keyof SearchState>(
             key: K
-        ): SearchState[k] {
+        ): SearchState[K] {
             return this.getState(this.searchState, key, "searchState");
         }
 
