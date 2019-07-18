@@ -366,7 +366,7 @@ namespace Umbraco.Web.PublishedCache.NuCache
 
             _logger.Debug<PublishedSnapshotService>("Loading content from database...");
             var sw = Stopwatch.StartNew();
-            // IMPORTANT GetAllContentSources sorts kits by level
+            // IMPORTANT GetAllContentSources sorts kits by level and sortOrder
             var kits = _dataSource.GetAllContentSources(scope);
             _contentStore.SetAll(kits);
             sw.Stop();
@@ -384,8 +384,9 @@ namespace Umbraco.Web.PublishedCache.NuCache
 
             _logger.Debug<PublishedSnapshotService>("Loading content from local db...");
             var sw = Stopwatch.StartNew();
-            var kits = _localContentDb.Select(x => x.Value)
-                .OrderBy(x => x.Node.Level); // IMPORTANT sort by level
+            var kits = _localContentDb.Select(x => x.Value) // IMPORTANT sort by level and sortOrder
+                .OrderBy(x => x.Node.Level)
+                .ThenBy(x => x.Node.SortOrder);
             var ok = _contentStore.SetAll(kits, true);
             sw.Stop();
             _logger.Debug<PublishedSnapshotService>("Loaded content from local db ({Duration}ms)", sw.ElapsedMilliseconds);
@@ -454,7 +455,7 @@ namespace Umbraco.Web.PublishedCache.NuCache
 
             _logger.Debug<PublishedSnapshotService>("Loading media from database...");
             var sw = Stopwatch.StartNew();
-            // IMPORTANT GetAllMediaSources sorts kits by level
+            // IMPORTANT GetAllMediaSources sorts kits by level and sortOrder
             var kits = _dataSource.GetAllMediaSources(scope);
             _mediaStore.SetAll(kits);
             sw.Stop();
@@ -472,8 +473,9 @@ namespace Umbraco.Web.PublishedCache.NuCache
 
             _logger.Debug<PublishedSnapshotService>("Loading media from local db...");
             var sw = Stopwatch.StartNew();
-            var kits = _localMediaDb.Select(x => x.Value)
-                .OrderBy(x => x.Node.Level); // IMPORTANT sort by level
+            var kits = _localMediaDb.Select(x => x.Value) // IMPORTANT sort by level and by sortOrder
+                .OrderBy(x => x.Node.Level)
+                .ThenBy(x => x.Node.SortOrder); 
             var ok = _mediaStore.SetAll(kits, true);
             sw.Stop();
             _logger.Debug<PublishedSnapshotService>("Loaded media from local db ({Duration}ms)", sw.ElapsedMilliseconds);
