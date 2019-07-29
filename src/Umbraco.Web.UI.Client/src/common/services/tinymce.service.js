@@ -195,7 +195,8 @@ function tinyMceService($rootScope, $q, imageHelper, $locale, $http, $timeout, s
                 //distraction-free = Theme: inlite, inline: true
                 switch (args.mode) {
                     case "classic":
-                        modeTheme  = "modern";
+                        //modeTheme  = "modern";
+                        modeTheme  = "silver";
                         modeInline = false;
                         break;
 
@@ -206,7 +207,8 @@ function tinyMceService($rootScope, $q, imageHelper, $locale, $http, $timeout, s
 
                     default:
                         //Will default to 'classic'
-                        modeTheme  = "modern";
+                        //modeTheme  = "modern";
+                        modeTheme  = "silver";
                         modeInline = false;
                         break;
                 }
@@ -336,10 +338,10 @@ function tinyMceService($rootScope, $q, imageHelper, $locale, $http, $timeout, s
 		 * @param {Object} editor the TinyMCE editor instance
 		 */
         createInsertEmbeddedMedia: function (editor, callback) {
-            editor.addButton('umbembeddialog', {
+            editor.ui.registry.addButton('umbembeddialog', {
                 icon: 'custom icon-tv',
                 tooltip: 'Embed',
-                onclick: function () {
+                onAction: function (buttonApi) {
                     if (callback) {
                         angularHelper.safeApply($rootScope, function() {
                             callback();
@@ -356,10 +358,10 @@ function tinyMceService($rootScope, $q, imageHelper, $locale, $http, $timeout, s
 
         createAceCodeEditor: function(editor, callback){
 
-            editor.addButton("ace", {
+            editor.ui.registry.addButton("ace", {
                 icon: "code",
                 tooltip: "View Source Code",
-                onclick: function(){
+                onAction: function(buttonApi){
                     if (callback) {
                         angularHelper.safeApply($rootScope, function() {
                             callback();
@@ -381,11 +383,11 @@ function tinyMceService($rootScope, $q, imageHelper, $locale, $http, $timeout, s
 		 * @param {Object} editor the TinyMCE editor instance
 		 */
         createMediaPicker: function (editor, callback) {
-            editor.addButton('umbmediapicker', {
+            editor.ui.registry.addButton('umbmediapicker', {
                 icon: 'custom icon-picture',
                 tooltip: 'Media Picker',
                 stateSelector: 'img',
-                onclick: function () {
+                onAction: function (buttonApi) {
 
 
                     var selectedElm = editor.selection.getNode(),
@@ -428,7 +430,7 @@ function tinyMceService($rootScope, $q, imageHelper, $locale, $http, $timeout, s
                     id: '__mcenew',
                     'data-udi': img.udi
                 };
-                
+
                 editor.selection.setContent(editor.dom.createHTML('img', data));
 
                 $timeout(function () {
@@ -447,9 +449,9 @@ function tinyMceService($rootScope, $q, imageHelper, $locale, $http, $timeout, s
                         }
                     }
 				    editor.dom.setAttrib(imgElm, 'id', null);
-                    
+
                     editor.fire('Change');
-                    
+
                 }, 500);
             }
         },
@@ -515,13 +517,13 @@ function tinyMceService($rootScope, $q, imageHelper, $locale, $http, $timeout, s
             }
 
             /** Adds the button instance */
-            editor.addButton('umbmacro', {
+            editor.ui.registry.addButton('umbmacro', {
                 icon: 'custom icon-settings-alt',
                 tooltip: 'Insert macro',
                 onPostRender: function () {
 
                     let ctrl = this;
-                    
+
 					/**
 					 * Check if the macro is currently selected and toggle the menu button
 					 */
@@ -543,7 +545,7 @@ function tinyMceService($rootScope, $q, imageHelper, $locale, $http, $timeout, s
                 },
 
                 /** The insert macro button click event handler */
-                onclick: function () {
+                onAction: function (buttonApi) {
 
                     var dialogData = {
                         //flag for use in rte so we only show macros flagged for the editor
@@ -865,29 +867,29 @@ function tinyMceService($rootScope, $q, imageHelper, $locale, $http, $timeout, s
                     });
             }
 
-            editor.addButton('link', {
+            editor.ui.registry.addButton('link', {
                 icon: 'link',
                 tooltip: 'Insert/edit link',
                 shortcut: 'Ctrl+K',
-                onclick: createLinkList(showDialog),
+                onAction: createLinkList(showDialog),
                 stateSelector: 'a[href]'
             });
 
-            editor.addButton('unlink', {
-                icon: 'unlink',
-                tooltip: 'Remove link',
-                cmd: 'unlink',
-                stateSelector: 'a[href]'
-            });
+            // editor.ui.registry.addButton('unlink', {
+            //     icon: 'unlink',
+            //     tooltip: 'Remove link',
+            //     cmd: 'unlink',
+            //     stateSelector: 'a[href]'
+            // });
 
             editor.addShortcut('Ctrl+K', '', createLinkList(showDialog));
             this.showDialog = showDialog;
 
-            editor.addMenuItem('link', {
+            editor.ui.registry.addMenuItem('link', {
                 icon: 'link',
                 text: 'Insert link',
                 shortcut: 'Ctrl+K',
-                onclick: createLinkList(showDialog),
+                onAction: createLinkList(showDialog),
                 stateSelector: 'a[href]',
                 context: 'insert',
                 prependToContext: true
@@ -1134,7 +1136,7 @@ function tinyMceService($rootScope, $q, imageHelper, $locale, $http, $timeout, s
                     };
                     editorService.linkPicker(linkPicker);
                 });
-             
+
             });
 
             //Create the insert media plugin

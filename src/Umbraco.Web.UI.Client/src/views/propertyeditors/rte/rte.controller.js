@@ -48,17 +48,18 @@ angular.module("umbraco")
             $q.all(promises).then(function (result) {
 
                 var standardConfig = result[promises.length - 1];
-                
+
                 if (height !== null) {
                     standardConfig.plugins.splice(standardConfig.plugins.indexOf("autoresize"), 1);
                 }
-                
+
                 //create a baseline Config to extend upon
                 var baseLineConfigObj = {
-                    maxImageSize: editorConfig.maxImageSize,
-                    width: width,
-                    height: height
+                    maxImageSize: editorConfig.maxImageSize
+                    //width: width,
+                    //height: height
                 };
+
 
                 angular.extend(baseLineConfigObj, standardConfig);
 
