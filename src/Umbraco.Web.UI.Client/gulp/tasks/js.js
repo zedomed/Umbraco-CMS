@@ -18,14 +18,15 @@ function js() {
 
     stream.add(
         gulp.src(config.sources.globs.js)
-            .pipe(gulp.dest(config.root + config.targets.js))
-        );
-
-     _.forEach(config.sources.js, function (group) {
+            .pipe(gulp.dest(config.root + config.targets.js)
+        )
+    );
+    
+    _.forEach(config.sources.js, function (group) {
         stream.add (processJs(group.files, group.out) );
-     });
+    });
 
-     return stream;
+    return stream;
 };
 
 module.exports = { js: js };
