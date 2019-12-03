@@ -24,6 +24,7 @@
     "autoprefixer": "^6.5.0",
     "bower-installer": "^1.2.0",
     "cssnano": "^3.7.6",
+    "graceful-fs": "^4.2.3",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.0",
     "gulp-connect": "5.0.0",
