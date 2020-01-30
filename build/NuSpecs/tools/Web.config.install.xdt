@@ -211,6 +211,23 @@
       <urlCompression doStaticCompression="false" doDynamicCompression="false" dynamicCompressionBeforeCache="false" xdt:Transform="SetAttributes" />
       <httpErrors existingResponse="Auto" xdt:Transform="SetAttributes" />
     </system.webServer>
+  </location>  
+  
+  <location path="install" xdt:Locator="Match(path)" xdt:Transform="InsertIfMissing" />
+  <location path="install" xdt:Locator="Match(path)">
+    <system.webServer xdt:Transform="InsertIfMissing" />
+  </location>
+  <location path="install" xdt:Locator="Match(path)">
+    <system.webServer>
+      <urlCompression xdt:Transform="InsertIfMissing" />
+      <httpErrors xdt:Transform="InsertIfMissing" />
+    </system.webServer>
+  </location>
+  <location path="install" xdt:Locator="Match(path)">
+    <system.webServer>
+      <urlCompression doStaticCompression="false" doDynamicCompression="false" dynamicCompressionBeforeCache="false" xdt:Transform="SetAttributes" />
+      <httpErrors existingResponse="Auto" xdt:Transform="SetAttributes" />
+    </system.webServer>
   </location>
 
 </configuration>
