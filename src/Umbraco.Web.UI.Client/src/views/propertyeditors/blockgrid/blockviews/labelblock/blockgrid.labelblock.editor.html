@@ -1,0 +1,31 @@
+<div
+    ng-style="{'grid-column': block.layoutModel.gridColumn}"
+    class="umb-block-grid__block blockgrid-blockelement-labelblock-editor"
+    >
+
+    <button type="button"
+        class="btn-reset umb-outline blockelement__draggable-element"
+        ng-click="vm.blockEditorApi.editBlock(block)"
+        focus-when="{{vm.moveFocusToBlock === block}}"
+    >
+        <i class="icon {{block.content.icon}}"></i>
+        <span>{{block.label}}</span>
+    </button>
+
+    <input type="text" ng-model="block.layoutModel.gridColumn"/>
+
+    <div class="umb-block-grid__block--actions">
+        <button type="button" class="btn-reset action --copy" localize="title" title="actions_copy" ng-click="vm.blockEditorApi.requestCopyBlock(block);" ng-if="vm.showCopy">
+            <i class="icon icon-documents" aria-hidden="true"></i>
+            <span class="sr-only">
+                <localize key="general_copy">Copy</localize>
+            </span>
+        </button>
+        <button type="button" class="btn-reset action --delete" localize="title" title="actions_delete" ng-click="vm.blockEditorApi.requestDeleteBlock(block);">
+            <i class="icon icon-trash" aria-hidden="true"></i>
+            <span class="sr-only">
+                <localize key="general_delete">Delete</localize>
+            </span>
+        </button>
+    </div>
+</div>

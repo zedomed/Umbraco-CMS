@@ -37,6 +37,11 @@ namespace Umbraco.Core
             public static class Aliases
             {
                 /// <summary>
+                /// Block Grid.
+                /// </summary>
+                public const string BlockGrid = "Umbraco.BlockGrid";
+
+                /// <summary>
                 /// Block List.
                 /// </summary>
                 public const string BlockList = "Umbraco.BlockList";

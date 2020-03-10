@@ -216,7 +216,7 @@
                 var blockModel = {};
                 blockModel.key = String.CreateGuid().replace(/-/g, "");
                 blockModel.config = angular.copy(blockConfiguration);
-                blockModel.labelInterpolator = $interpolate(blockModel.config.label);
+                blockModel.labelInterpolator = $interpolate(blockModel.config.label || "");
 
                 var scaffold = this.getScaffoldFor(blockConfiguration.contentTypeAlias);
                 if(scaffold === null) {
