@@ -51,13 +51,12 @@ namespace Umbraco.Examine
 
             // We can lookup all of the creator/writer names at once which can save some
             // processing below instead of one by one.
-            using (var scope = _scopeProvider.CreateScope())
+            using (var scope = _scopeProvider.CreateScope(autoComplete: true))
             {
                 creatorIds = content.Select(x => x.CreatorId).Distinct().Select(x => _userService.GetProfileById(x))
                     .ToDictionary(x => x.Id, x => x);
                 writerIds = content.Select(x => x.WriterId).Distinct().Select(x => _userService.GetProfileById(x))
                     .ToDictionary(x => x.Id, x => x);
-                scope.Complete();
             }
 
             // TODO: There is a lot of boxing going on here and ultimately all values will be boxed by Lucene anyways
@@ -65,7 +64,7 @@ namespace Umbraco.Examine
             // Lucene will do it no matter what? One idea was to create a `FieldValue` struct which would contain `object`, `object[]`, `ValueType` and `ValueType[]`
             // references and then each array is an array of `FieldValue[]` and values are assigned accordingly. Not sure if it will make a difference or not.
 
-            foreach (var c in content)
+            return content.Select(c =>
             {
                 var isVariant = c.ContentType.VariesByCulture();
 
@@ -129,8 +128,8 @@ namespace Umbraco.Examine
 
                 var vs = new ValueSet(c.Id.ToInvariantString(), IndexTypes.Content, c.ContentType.Alias, values);
 
-                yield return vs;
-            }
+                return vs;
+            });
         }
     }
 
