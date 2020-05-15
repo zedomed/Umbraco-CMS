@@ -53,9 +53,9 @@ namespace Umbraco.Examine
             // processing below instead of one by one.
             using (var scope = _scopeProvider.CreateScope(autoComplete: true))
             {
-                creatorIds = content.Select(x => x.CreatorId).Distinct().Select(x => _userService.GetProfileById(x))
+                creatorIds = _userService.GetProfilesById(content.Select(x => x.CreatorId).ToArray())
                     .ToDictionary(x => x.Id, x => x);
-                writerIds = content.Select(x => x.WriterId).Distinct().Select(x => _userService.GetProfileById(x))
+                writerIds = _userService.GetProfilesById(content.Select(x => x.WriterId).ToArray())
                     .ToDictionary(x => x.Id, x => x);
             }
 
@@ -88,7 +88,7 @@ namespace Umbraco.Examine
                     {"path", c.Path?.Yield() ?? Enumerable.Empty<string>()},
                     {"nodeType", c.ContentType.Id.ToString().Yield() ?? Enumerable.Empty<string>()},
                     {"creatorName", (creatorIds.TryGetValue(c.CreatorId, out var creatorProfile) ? creatorProfile.Name : "??").Yield() },
-                    {"writerName", (writerIds.TryGetValue(c.CreatorId, out var writerProfile) ? writerProfile.Name : "??").Yield() },
+                    {"writerName", (writerIds.TryGetValue(c.WriterId, out var writerProfile) ? writerProfile.Name : "??").Yield() },
                     {"writerID", new object[] {c.WriterId}},
                     {"templateID", new object[] {c.TemplateId ?? 0}},
                     {UmbracoContentIndex.VariesByCultureFieldName, new object[] {"n"}},
