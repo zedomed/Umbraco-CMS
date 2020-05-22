@@ -3,7 +3,6 @@
     display: flex;
     box-sizing: border-box;
     border-bottom: 1px solid @gray-9;
-    flex-wrap: wrap;
 }
 
 .umb-editor-wrapper .umb-node-preview {
@@ -47,19 +46,15 @@
 .umb-node-preview__name {
     color: @black;
     margin-top: 3px;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .umb-node-preview__description {
     font-size: 12px;
     line-height: 1.5em;
     color: @gray-3;
-}
-
-.umb-node-preview__name,
-.umb-node-preview__description {
-    /*text-overflow: ellipsis;
-    overflow: hidden;*/
-    word-wrap: break-word;
+    word-break: break-word;
 }
 
 .umb-node-preview__actions {

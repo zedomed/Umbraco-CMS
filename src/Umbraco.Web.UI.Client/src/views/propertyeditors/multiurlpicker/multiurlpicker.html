@@ -1,26 +1,49 @@
-﻿<div ng-controller="Umbraco.PropertyEditors.MultiUrlPickerController" class="umb-property-editor umb-contentpicker">
-    <p ng-if="(renderModel|filter:{trashed:true}).length == 1"><localize key="contentPicker_pickedTrashedItem"></localize></p>
-    <p ng-if="(renderModel|filter:{trashed:true}).length > 1"><localize key="contentPicker_pickedTrashedItems"></localize></p>
+﻿<div ng-controller="Umbraco.PropertyEditors.MultiUrlPickerController as vm" class="umb-property-editor umb-multiurlpicker">
+    <p ng-if="(model.value|filter:{trashed:true}).length == 1"><localize key="contentPicker_pickedTrashedItem"></localize></p>
+    <p ng-if="(model.value|filter:{trashed:true}).length > 1"><localize key="contentPicker_pickedTrashedItems"></localize></p>
 
     <ng-form name="multiUrlPickerForm">
-        <div ui-sortable="sortableOptions" ng-model="renderModel">
-            <umb-node-preview ng-repeat="link in renderModel"
-                              icon="link.icon"
-                              name="link.name"
-                              published="link.published"
-                              description="link.url + (link.queryString ? link.queryString : '')"
-                              sortable="!sortableOptions.disabled"
-                              allow-remove="true"
-                              allow-edit="true"
-                              on-remove="remove($index)"
-                              on-edit="openLinkPicker(link, $index)">
-            </umb-node-preview>
+        <div ui-sortable="vm.sortableOptions" ng-model="model.value">
+            <div ng-repeat="link in model.value"
+                class="__entry"
+                ng-class="{'--unpublished': link.published === false}"
+            >
+                <div class="__icon {{ link.icon }}" aria-hidden="true"></div>
+
+                <div class="__content">
+                    <input class="__name" type="text" label="{{link.alias}}" ng-model="link.name" />
+                    <div class="__description" >{{link.url}}{{link.queryString}}</div>
+                </div>
+
+                <div class="__actions">
+
+                    <button
+                        type="button"
+                        class="__action"
+                        title="Edit {{name}}"
+                        ng-click="vm.editLink(link)"
+                    >
+                        <localize key="general_edit">Edit</localize>
+                        <span class="sr-only">{{link.name}}...</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        class="__action"
+                        title="Remove {{link.name}}"
+                        ng-click="vm.removeLink(link)"
+                    >
+                        <localize key="general_remove">Remove</localize>
+                        <span class="sr-only">{{name}}</span>
+                    </button>
+                </div>
+            </div>
         </div>
 
-        <a ng-show="!model.config.maxNumber || renderModel.length < model.config.maxNumber"
+        <a ng-show="!model.config.maxNumber || model.value.length < model.config.maxNumber"
            class="umb-node-preview-add"
            href
-           ng-click="openLinkPicker()"
+           ng-click="vm.openLinkCreator($event)"
            prevent-default>
             <localize key="general_add">Add</localize>
         </a>
@@ -30,38 +53,38 @@
 
             <!-- Both min and max items -->
             <span ng-if="model.config.minNumber && model.config.maxNumber && model.config.minNumber !== model.config.maxNumber">
-                <span ng-if="renderModel.length < model.config.maxNumber">Add between {{model.config.minNumber}} and {{model.config.maxNumber}} items</span>
-                <span ng-if="renderModel.length > model.config.maxNumber">
+                <span ng-if="model.value.length < model.config.maxNumber">Add between {{model.config.minNumber}} and {{model.config.maxNumber}} items</span>
+                <span ng-if="model.value.length > model.config.maxNumber">
                     <localize key="validation_maxCount">You can only have</localize> {{model.config.maxNumber}} <localize key="validation_itemsSelected"> items selected</localize>
                 </span>
             </span>
 
             <!-- Equal min and max -->
             <span ng-if="model.config.minNumber && model.config.maxNumber && model.config.minNumber === model.config.maxNumber">
-                <span ng-if="renderModel.length < model.config.maxNumber">Add {{model.config.minNumber - renderModel.length}} item(s)</span>
-                <span ng-if="renderModel.length > model.config.maxNumber">
+                <span ng-if="model.value.length < model.config.maxNumber">Add {{model.config.minNumber - model.value.length}} item(s)</span>
+                <span ng-if="model.value.length > model.config.maxNumber">
                     <localize key="validation_maxCount">You can only have</localize> {{model.config.maxNumber}} <localize key="validation_itemsSelected"> items selected</localize>
                 </span>
             </span>
 
             <!-- Only max -->
             <span ng-if="!model.config.minNumber && model.config.maxNumber">
-                <span ng-if="renderModel.length < model.config.maxNumber">Add up to {{model.config.maxNumber}} items</span>
-                <span ng-if="renderModel.length > model.config.maxNumber">
+                <span ng-if="model.value.length < model.config.maxNumber">Add up to {{model.config.maxNumber}} items</span>
+                <span ng-if="model.value.length > model.config.maxNumber">
                     <localize key="validation_maxCount">You can only have</localize> {{model.config.maxNumber}} <localize key="validation_itemsSelected">items selected</localize>
                 </span>
             </span>
 
             <!-- Only min -->
-            <span ng-if="model.config.minNumber && !model.config.maxNumber && renderModel.length < model.config.minNumber">
+            <span ng-if="model.config.minNumber && !model.config.maxNumber && model.value.length < model.config.minNumber">
                 Add at least {{model.config.minNumber}} item(s)
             </span>
 
         </div>
 
         <!--These are here because we need ng-form fields to validate against-->
-        <input type="hidden" name="minCount" ng-model="renderModel" />
-        <input type="hidden" name="maxCount" ng-model="renderModel" />
+        <input type="hidden" name="minCount" ng-model="model.value" />
+        <input type="hidden" name="maxCount" ng-model="model.value" />
 
         <div ng-messages="multiUrlPickerForm.minCount.$error" show-validation-on-submit>
             <div class="help-inline" ng-message="minCount">
@@ -73,5 +96,14 @@
                 <localize key="validation_maxCount">You can only have</localize> {{model.config.maxNumber}} <localize key="validation_itemsSelected">items selected</localize>
             </div>
         </div>
+
+        <umb-overlay
+            ng-if="vm.creatorMenu.show"
+            position="target"
+            size="vm.creatorMenu.size"
+            view="vm.creatorMenu.view"
+            model="vm.creatorMenu">
+        </umb-overlay>
+
     </ng-form>
 </div>

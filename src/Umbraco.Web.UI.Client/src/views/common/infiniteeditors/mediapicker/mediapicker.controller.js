@@ -262,7 +262,7 @@ angular.module("umbraco")
                     gotoFolder(item);
                 }
                 else {
-                    $scope.clickHandler(item, event, index);
+                    vm.clickHandler(item, event, index);
                 }
             };
 

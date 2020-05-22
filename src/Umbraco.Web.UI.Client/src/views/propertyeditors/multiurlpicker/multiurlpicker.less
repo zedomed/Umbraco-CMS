@@ -1,0 +1,94 @@
+.umb-multiurlpicker {
+
+    .umb-property-editor--limit-width();
+
+    .__entry {
+
+        padding: 5px 0;
+        display: flex;
+        box-sizing: border-box;
+        border-bottom: 1px solid @gray-9;
+        cursor: grab;
+
+        &:last-of-type {
+            border-bottom: none;
+        }
+
+        &.--unpublished {
+            .__icon,
+            .__name,
+            .__description {
+                opacity: 0.6;
+            }
+        }
+
+        .__icon {
+            display: flex;
+            width: 25px;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            margin-right: 6px;
+            margin-left: 5px;
+            flex: 0 0 auto;
+        }
+
+        .__content {
+            flex: 1 1 auto;
+            margin-right: 25px;
+            overflow: hidden;
+
+            .__name {
+                color: @black;
+                margin-top: 3px;
+                word-wrap: break-word;
+                border-color:transparent;
+                width: 100%;
+                height: auto;
+                padding: 1px 4px;
+
+                &:hover, &:focus {
+                    border-color: @inputBorderFocus;
+                }
+                &:focus {
+                    outline: 0;
+                    .tabbing-active & {
+                        outline: 2px solid @ui-outline;
+                    }
+                  }
+
+            }
+            .__description {
+                font-size: 12px;
+                line-height: 1.5em;
+                color: @gray-3;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                margin-left: 4px;
+            }
+        }
+        .__actions {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+            
+            .__action {
+                background: transparent;
+                padding: 0;
+                border: 0 none;
+                margin-left: 5px;
+                margin-right: 5px;
+                font-size: 13px;
+                font-weight: bold;
+                color: @ui-action-type;
+                cursor: pointer;
+                &:hover {
+                    color: @ui-action-type-hover;
+                    text-decoration: none;
+                    opacity: 1;
+                }                
+            }
+        }
+    }
+}
