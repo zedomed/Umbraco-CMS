@@ -186,3 +186,9 @@ cypress.env.json
 /src/Umbraco.Web.UI.NetCore/App_Data/Logs/*
 /src/Umbraco.Web.UI.NetCore/App_Data/TEMP/TypesCache/*
 /src/Umbraco.Web.UI.NetCore/App_Data/TEMP/*
+
+# Linux case sensitive
+src/Umbraco.Web.UI.NetCore/wwwroot/umbraco/assets/*
+src/Umbraco.Web.UI.NetCore/wwwroot/umbraco/js/*
+src/Umbraco.Web.UI.NetCore/wwwroot/umbraco/lib/*
+src/Umbraco.Web.UI.NetCore/wwwroot/umbraco/views/*
