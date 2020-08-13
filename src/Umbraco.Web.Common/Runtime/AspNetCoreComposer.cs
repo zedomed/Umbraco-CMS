@@ -26,6 +26,10 @@ using Umbraco.Web.Common.Templates;
 using Umbraco.Web.Common.Security;
 using Umbraco.Web.Security;
 using Umbraco.Web.Templates;
+using Umbraco.Examine;
+using Examine;
+using System.Collections.Generic;
+using Umbraco.Web.Models.ContentEditing;
 
 namespace Umbraco.Web.Common.Runtime
 {
@@ -98,7 +102,28 @@ namespace Umbraco.Web.Common.Runtime
             composition.RegisterUnique<IPublicAccessChecker, PublicAccessChecker>();
             composition.RegisterUnique<LegacyPasswordSecurity>(factory => new LegacyPasswordSecurity(factory.GetInstance<IUserPasswordConfiguration>()));
 
+            composition.RegisterUnique<IUmbracoIndexesCreator, NoopUmbracoIndexesCreator>();
+            composition.RegisterUnique<IBackOfficeExamineSearcher, NoopBackOfficeExamineSearcher>();
 
+        }
+    }
+
+    
+    public class NoopBackOfficeExamineSearcher : IBackOfficeExamineSearcher
+    {
+        public IEnumerable<ISearchResult> Search(string query, UmbracoEntityTypes entityType, int pageSize, long pageIndex, out long totalFound,
+            string searchFrom = null, bool ignoreUserStartNodes = false)
+        {
+            totalFound = 0;
+            return new ISearchResult[0];
+        }
+    }
+
+    public class NoopUmbracoIndexesCreator : IUmbracoIndexesCreator
+    {
+        public IEnumerable<IIndex> Create()
+        {
+            return new IIndex[0];
         }
     }
 }
