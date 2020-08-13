@@ -9,12 +9,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
-using SixLabors.ImageSharp.Memory;
-using SixLabors.ImageSharp.Web.Caching;
-using SixLabors.ImageSharp.Web.Commands;
-using SixLabors.ImageSharp.Web.DependencyInjection;
-using SixLabors.ImageSharp.Web.Processors;
-using SixLabors.ImageSharp.Web.Providers;
+
 using Smidge;
 using Smidge.Nuglify;
 using Umbraco.Core;
@@ -55,34 +50,34 @@ namespace Umbraco.Extensions
         /// <returns></returns>
         public static IServiceCollection AddUmbracoImageSharp(this IServiceCollection services, IImagingSettings imagingSettings)
         {
-            services.AddImageSharpCore(
-                    options =>
-                    {
-                        options.Configuration = SixLabors.ImageSharp.Configuration.Default;
-                        options.MaxBrowserCacheDays = imagingSettings.MaxBrowserCacheDays;
-                        options.MaxCacheDays = imagingSettings.MaxCacheDays;
-                        options.CachedNameLength = imagingSettings.CachedNameLength;
-                        options.OnParseCommands = context =>
-                        {
-                            RemoveIntParamenterIfValueGreatherThen(context.Commands, ResizeWebProcessor.Width, imagingSettings.MaxResizeWidth);
-                            RemoveIntParamenterIfValueGreatherThen(context.Commands, ResizeWebProcessor.Height, imagingSettings.MaxResizeHeight);
-                        };
-                        options.OnBeforeSave = _ => { };
-                        options.OnProcessed = _ => { };
-                        options.OnPrepareResponse = _ => { };
-                    })
-                .SetRequestParser<QueryCollectionRequestParser>()
-                .SetMemoryAllocator(provider => ArrayPoolMemoryAllocator.CreateWithMinimalPooling())
-                .Configure<PhysicalFileSystemCacheOptions>(options =>
-                {
-                    options.CacheFolder = imagingSettings.CacheFolder;
-                })
-                .SetCache<PhysicalFileSystemCache>()
-                .SetCacheHash<CacheHash>()
-                .AddProvider<PhysicalFileSystemProvider>()
-                .AddProcessor<ResizeWebProcessor>()
-                .AddProcessor<FormatWebProcessor>()
-                .AddProcessor<BackgroundColorWebProcessor>();
+            // services.AddImageSharpCore(
+            //         options =>
+            //         {
+            //             options.Configuration = SixLabors.ImageSharp.Configuration.Default;
+            //             options.MaxBrowserCacheDays = imagingSettings.MaxBrowserCacheDays;
+            //             options.MaxCacheDays = imagingSettings.MaxCacheDays;
+            //             options.CachedNameLength = imagingSettings.CachedNameLength;
+            //             options.OnParseCommands = context =>
+            //             {
+            //                 RemoveIntParamenterIfValueGreatherThen(context.Commands, ResizeWebProcessor.Width, imagingSettings.MaxResizeWidth);
+            //                 RemoveIntParamenterIfValueGreatherThen(context.Commands, ResizeWebProcessor.Height, imagingSettings.MaxResizeHeight);
+            //             };
+            //             options.OnBeforeSave = _ => { };
+            //             options.OnProcessed = _ => { };
+            //             options.OnPrepareResponse = _ => { };
+            //         })
+            //     .SetRequestParser<QueryCollectionRequestParser>()
+            //     .SetMemoryAllocator(provider => ArrayPoolMemoryAllocator.CreateWithMinimalPooling())
+            //     .Configure<PhysicalFileSystemCacheOptions>(options =>
+            //     {
+            //         options.CacheFolder = imagingSettings.CacheFolder;
+            //     })
+            //     .SetCache<PhysicalFileSystemCache>()
+            //     .SetCacheHash<CacheHash>()
+            //     .AddProvider<PhysicalFileSystemProvider>()
+            //     .AddProcessor<ResizeWebProcessor>()
+            //     .AddProcessor<FormatWebProcessor>()
+            //     .AddProcessor<BackgroundColorWebProcessor>();
 
             return services;
         }
@@ -128,13 +123,13 @@ namespace Umbraco.Extensions
 
             // TODO: we can inject params with DI here
             public UmbracoMvcConfigureOptions()
-            {                
+            {
             }
 
             // TODO: we can configure global mvc options here if we need to
             public void Configure(MvcOptions options)
-            {                
-                
+            {
+
             }
         }
 
