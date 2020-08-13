@@ -103,6 +103,7 @@ src/Umbraco.Web.UI/[Uu]mbraco/[Jj]s/canvasdesigner.*.js
 src/Umbraco.Web.UI/[Uu]mbraco/[Jj]s/navigation.controller.js
 src/Umbraco.Web.UI/[Uu]mbraco/[Jj]s/main.controller.js
 src/Umbraco.Web.UI/[Uu]mbraco/[Jj]s/utilities.js
+src/Umbraco.Web.UI/[Uu]mbraco/[Jj]s/installer.app.js
 
 src/Umbraco.Web.UI/[Uu]mbraco/[Vv]iews/
 src/Umbraco.Web.UI/[Uu]mbraco/[Vv]iews/**/*.js
@@ -192,3 +193,6 @@ src/Umbraco.Web.UI.NetCore/wwwroot/umbraco/assets/*
 src/Umbraco.Web.UI.NetCore/wwwroot/umbraco/js/*
 src/Umbraco.Web.UI.NetCore/wwwroot/umbraco/lib/*
 src/Umbraco.Web.UI.NetCore/wwwroot/umbraco/views/*
+
+# Weird folder - no need to check this in...
+src/Umbraco.Web.UI.NetCore/~/*
