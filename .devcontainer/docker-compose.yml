@@ -20,21 +20,19 @@ services:
       - ..:/workspace:cached
 
     depends_on:
-        - sql
+        - db
 
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
 
     links:
-      - sql
+      - db
 
-  sql:
+  db:
     image: "mcr.microsoft.com/mssql/server"
     environment:
         SA_PASSWORD: "Umbrac0R0cks!"
         ACCEPT_EULA: "Y"
     ports:
         - 1433:1433
-    hostname:
-        - dbserver
 
