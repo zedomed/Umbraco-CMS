@@ -33,4 +33,8 @@ services:
     environment:
         SA_PASSWORD: "Umbrac0R0cks!"
         ACCEPT_EULA: "Y"
+    ports:
+        - 1433:1433
+    hostname:
+        - dbserver
 
