@@ -106,7 +106,7 @@ function dependencies() {
             "name": "angular-messages",
             "src":  ["./node_modules/angular-messages/angular-messages.js"],
             "base": "./node_modules/angular-messages"
-        },        
+        },
         {
             "name": "angular-mocks",
             "src":  ["./node_modules/angular-mocks/angular-mocks.js"],
@@ -244,11 +244,11 @@ function dependencies() {
     // add streams for node modules
     nodeModules.forEach(module => {
         var task = gulp.src(module.src, { base: module.base, allowEmpty: true });
-        
+
         _.forEach(config.roots, function(root){
             task = task.pipe(gulp.dest(root + config.targets.lib + "/" + module.name))
         });
-        
+
         stream.add(task);
     });
 
@@ -258,30 +258,31 @@ function dependencies() {
     _.forEach(config.roots, function(root){
         libTask = libTask.pipe(gulp.dest(root + config.targets.lib))
     });
-    
+
     stream.add(libTask);
 
     //Copies all static assets into /root / assets folder
     //css, fonts and image files
-    
+
     var assetsTask = gulp.src(config.sources.globs.assets, { allowEmpty: true });
-    assetsTask = assetsTask.pipe(imagemin([
-        imagemin.gifsicle({interlaced: true}),
-        imagemin.jpegtran({progressive: true}),
-        imagemin.optipng({optimizationLevel: 5}),
-        imagemin.svgo({
-            plugins: [
-                {removeViewBox: true},
-                {cleanupIDs: false}
-            ]
-        })
-    ]));
+    // WB: TODO Not a perm change - but painful to debug npm stuff for a cycle hack
+    // assetsTask = assetsTask.pipe(imagemin([
+    //     imagemin.gifsicle({interlaced: true}),
+    //     imagemin.jpegtran({progressive: true}),
+    //     imagemin.optipng({optimizationLevel: 5}),
+    //     imagemin.svgo({
+    //         plugins: [
+    //             {removeViewBox: true},
+    //             {cleanupIDs: false}
+    //         ]
+    //     })
+    // ]));
 
     _.forEach(config.roots, function(root){
         assetsTask = assetsTask.pipe(gulp.dest(root + config.targets.assets));
     });
-   
-    
+
+
     stream.add(assetsTask);
 
     // Copies all the less files related to the preview into their folder
@@ -301,13 +302,13 @@ function dependencies() {
         configTask = configTask.pipe(gulp.dest(root + config.targets.views + "/propertyeditors/grid/config"));
     });
     stream.add(configTask);
-    
+
     var dashboardTask = gulp.src("src/views/dashboard/default/*.jpg", { allowEmpty: true });
     _.forEach(config.roots, function(root){
         dashboardTask = dashboardTask .pipe(gulp.dest(root + config.targets.views + "/dashboard/default"));
     });
     stream.add(dashboardTask);
-  
+
     return stream;
 };
 
