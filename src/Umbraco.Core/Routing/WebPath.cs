@@ -10,7 +10,7 @@ namespace Umbraco.Core.Routing
             const string separator = "/";
 
             if (paths == null) throw new ArgumentNullException(nameof(paths));
-            if (!paths.Any()) return string.Empty;
+            if (paths.Length == 0) return string.Empty;
 
 
 
