@@ -106,6 +106,7 @@ namespace Umbraco.Web.Models.Mapping
         // Umbraco.Code.MapAll -SecurityStamp -Avatar -ProviderUserKey -RawPasswordValue
         // Umbraco.Code.MapAll -RawPasswordAnswerValue -Comments -IsApproved -IsLockedOut -LastLoginDate
         // Umbraco.Code.MapAll -LastPasswordChangeDate -LastLockoutDate -FailedPasswordAttempts
+        // Umbraco.Code.MapAll -PasswordConfiguration
         private void Map(UserInvite source, IUser target, MapperContext context)
         {
             target.Email = source.Email;
@@ -124,6 +125,7 @@ namespace Umbraco.Web.Models.Mapping
         // Umbraco.Code.MapAll -ProviderUserKey -RawPasswordValue -RawPasswordAnswerValue -PasswordQuestion -Comments
         // Umbraco.Code.MapAll -IsApproved -IsLockedOut -LastLoginDate -LastPasswordChangeDate -LastLockoutDate
         // Umbraco.Code.MapAll -FailedPasswordAttempts
+        // Umbraco.Code.MapAll -PasswordConfiguration
         private void Map(UserSave source, IUser target, MapperContext context)
         {
             target.Name = source.Name;
@@ -445,6 +447,6 @@ namespace Umbraco.Web.Models.Mapping
                 Trashed = false,
                 ParentId = -1
             };
-        }       
+        }
     }
 }
