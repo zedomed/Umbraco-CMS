@@ -24,9 +24,9 @@
                   not want this to happen as the alpha of the next major is, really, the next major already.
                 -->
                 <dependency id="UmbracoCms.Core" version="[$version$]" />
-                <dependency id="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" version="[5.0.0-preview.7.20365.19,5.999999)" />
+                <dependency id="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" version="[5.0.0-preview.8.20414.8,5.999999)" />
                 <dependency id="Serilog.AspNetCore" version="[3.2.0,3.999999)" />
-                <dependency id="Microsoft.AspNetCore.Mvc.NewtonsoftJson" version="[5.0.0-preview.7.20365.19,5.999999)" />
+                <dependency id="Microsoft.AspNetCore.Mvc.NewtonsoftJson" version="[5.0.0-preview.8.20414.8,5.999999)" />
                 <dependency id="MiniProfiler.AspNetCore.Mvc" version="[4.1.0,4.999999)" />
                 <dependency id="NETStandard.Library" version="[2.0.3,2.999999)" />
                 <dependency id="Serilog.AspNetCore" version="[3.2.0,3.999999)" />
