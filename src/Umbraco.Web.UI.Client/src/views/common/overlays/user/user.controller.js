@@ -71,7 +71,7 @@ angular.module("umbraco")
                     //set the timer
                     //updateTimeout();
 
-                    authResource.getCurrentUserLinkedLogins().then(function(logins) {
+                    currentUserResource.getCurrentUserLinkedLogins().then(function(logins) {
                         //reset all to be un-linked
                         for (var provider in $scope.externalLoginProviders) {
                             $scope.externalLoginProviders[provider].linkedProviderKey = undefined;
@@ -142,7 +142,7 @@ angular.module("umbraco")
 
                 currentUserResource.changePassword($scope.changePasswordModel.value).then(function(data) {
 
-                    //reset old data 
+                    //reset old data
                     clearPasswordFields();
 
                     formHelper.resetForm({ scope: $scope });
@@ -153,7 +153,7 @@ angular.module("umbraco")
                     }, 2000);
 
                 }, function (err) {
-
+                    formHelper.resetForm({ scope: $scope, hasErrors: true });
                     formHelper.handleError(err);
 
                     $scope.changePasswordButtonState = "error";

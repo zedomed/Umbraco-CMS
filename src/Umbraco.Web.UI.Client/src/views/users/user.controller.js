@@ -154,7 +154,9 @@
                         extendedSave(saved).then(function (result) {
                             //if all is good, then reset the form
                             formHelper.resetForm({ scope: $scope });
-                        }, Utilities.noop);
+                        }, function () {
+                            formHelper.resetForm({ scope: $scope, hasErrors: true });
+                        });
 
                         vm.user = _.omit(saved, "navigation");
                         //restore
@@ -165,7 +167,7 @@
                         vm.page.saveButtonState = "success";
 
                     }, function (err) {
-
+                        formHelper.resetForm({ scope: $scope, hasErrors: true });
                         contentEditingHelper.handleSaveError({
                             err: err,
                             showNotifications: true
@@ -267,7 +269,7 @@
                 submit: function (model) {
                     // select items
                     if (model.selection) {
-                        angular.forEach(model.selection, function (item) {
+                        model.selection.forEach(function (item) {
                             if (item.id === "-1") {
                                 item.name = vm.labels.contentRoot;
                                 item.icon = "icon-folder";
@@ -296,7 +298,7 @@
                 submit: function (model) {
                     // select items
                     if (model.selection) {
-                        angular.forEach(model.selection, function (item) {
+                        model.selection.forEach(function (item) {
                             if (item.id === "-1") {
                                 item.name = vm.labels.mediaRoot;
                                 item.icon = "icon-folder";
@@ -319,7 +321,7 @@
             var found = false;
             // check if item is already in the selected list
             if (selection.length > 0) {
-                angular.forEach(selection, function (selectedItem) {
+                selection.forEach(function (selectedItem) {
                     if (selectedItem.udi === item.udi) {
                         found = true;
                     }

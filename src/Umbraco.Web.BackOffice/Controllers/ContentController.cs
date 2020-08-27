@@ -2291,7 +2291,7 @@ namespace Umbraco.Web.Editors
             return notifications;
         }
 
-        public IActionResult PostNotificationOptions(int contentId, [FromQuery] string[] notifyOptions)
+        public IActionResult PostNotificationOptions(int contentId, [FromQuery(Name="notifyOptions[]")] string[] notifyOptions)
         {
             if (contentId <= 0) return NotFound();
             var content = _contentService.GetById(contentId);
@@ -2441,7 +2441,7 @@ namespace Umbraco.Web.Editors
         // set up public access using role based access
         [EnsureUserPermissionForContent("contentId", ActionProtect.ActionLetter)]
         [HttpPost]
-        public IActionResult PostPublicAccess(int contentId, [FromQuery]string[] groups, [FromQuery]string[] usernames, int loginPageId, int errorPageId)
+        public IActionResult PostPublicAccess(int contentId, [FromQuery(Name = "groups[]")]string[] groups, [FromQuery(Name = "usernames[]")]string[] usernames, int loginPageId, int errorPageId)
         {
             if ((groups == null || groups.Any() == false) && (usernames == null || usernames.Any() == false))
             {

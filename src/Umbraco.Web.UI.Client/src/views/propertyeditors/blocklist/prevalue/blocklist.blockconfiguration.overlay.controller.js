@@ -23,7 +23,7 @@
             return elementTypeResource.getAll().then(function (elementTypes) {
                 vm.elementTypes = elementTypes;
 
-                vm.contentPreview = vm.getElementTypeByKey(vm.block.contentTypeKey);
+                vm.contentPreview = vm.getElementTypeByKey(vm.block.contentElementTypeKey);
                 vm.settingsPreview = vm.getElementTypeByKey(vm.block.settingsElementTypeKey);
             });
         }
@@ -100,6 +100,7 @@
         };
         vm.applySettingsToBlock = function(block, key) {
             block.settingsElementTypeKey = key;
+            vm.settingsPreview = vm.getElementTypeByKey(vm.block.settingsElementTypeKey);
         };
 
         vm.requestRemoveSettingsForBlock = function(block) {
@@ -146,7 +147,7 @@
 
 
         vm.addViewForBlock = function(block) {
-            localizationService.localize("blockEditor_headlineSelectView").then(function(localizedTitle) {
+            localizationService.localize("blockEditor_headlineAddCustomView").then(function(localizedTitle) {
 
                 const filePicker = {
                     title: localizedTitle,
@@ -159,7 +160,7 @@
                     },
                     select: function (node) {
                         const filepath = decodeURIComponent(node.id.replace(/\+/g, " "));
-                        block.view = filepath;
+                        block.view = "~/" + filepath;
                         editorService.close();
                     },
                     close: function () {
@@ -167,7 +168,7 @@
                     }
                 };
                 editorService.treePicker(filePicker);
-            
+
             });
         }
         vm.requestRemoveViewForBlock = function(block) {
@@ -190,10 +191,10 @@
         };
 
 
-        
+
         vm.addStylesheetForBlock = function(block) {
             localizationService.localize("blockEditor_headlineAddCustomStylesheet").then(function(localizedTitle) {
-                    
+
                 const filePicker = {
                     title: localizedTitle,
                     section: "settings",
@@ -205,7 +206,7 @@
                     },
                     select: function (node) {
                         const filepath = decodeURIComponent(node.id.replace(/\+/g, " "));
-                        block.stylesheet = filepath;
+                        block.stylesheet = "~/" + filepath;
                         editorService.close();
                     },
                     close: function () {
@@ -251,7 +252,8 @@
                         return !(i.name.indexOf(".jpg") !== -1 || i.name.indexOf(".jpeg") !== -1 || i.name.indexOf(".png") !== -1 || i.name.indexOf(".svg") !== -1 || i.name.indexOf(".webp") !== -1 || i.name.indexOf(".gif") !== -1);
                     },
                     select: function (file) {
-                        block.thumbnail = file.name;
+                        const id = decodeURIComponent(file.id.replace(/\+/g, " "));
+                        block.thumbnail = "~/" + id;
                         editorService.close();
                     },
                     close: function () {

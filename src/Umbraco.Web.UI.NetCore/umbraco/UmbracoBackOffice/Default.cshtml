@@ -16,9 +16,7 @@
 @inject IProfilerHtml profilerHtml
 
 @{
-    var isDebug = false;
-    var qryDebug = Context.Request.Query["umbDebug"].TryConvertTo<bool>();
-    isDebug = qryDebug.Success && qryDebug.Result;
+    bool.TryParse(Context.Request.Query["umbDebug"], out bool isDebug);
     var backOfficePath = globalSettings.GetBackOfficePath(hostingEnvironment);
 }
 
@@ -69,13 +67,13 @@
 
             </div>
 
-            <umb-tour ng-if="tour.show"
-                      model="tour">
-            </umb-tour>
-
             <umb-notifications></umb-notifications>
 
         </div>
+
+        <umb-tour ng-if="tour.show"
+                  model="tour">
+        </umb-tour>
 
         <!-- help dialog controller by the help button - this also forces the backoffice UI to shift 400px  -->
         <umb-drawer data-element="drawer" ng-if="drawer.show" model="drawer.model" view="drawer.view"></umb-drawer>
@@ -116,7 +114,7 @@
         }
     </script>
 
-    <script src="lib/lazyload-js/lazyload.min.js"></script>
+    <script src="lib/lazyload-js/LazyLoad.min.js"></script>
     <script src="@Url.GetUrlWithCacheBust("Application", "BackOffice", null, hostingEnvironment, umbracoVersion, runtimeMinifier)"></script>
 
     @if (isDebug)
