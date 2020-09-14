@@ -36,6 +36,8 @@ services:
         - 1433:1433
     networks:
         - umb-net
+    expose:
+        - "1433"
 
 networks:
     umb-net:
