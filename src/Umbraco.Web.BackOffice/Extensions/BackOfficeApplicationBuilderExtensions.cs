@@ -6,7 +6,7 @@ using Umbraco.Web.BackOffice.Security;
 
 namespace Umbraco.Extensions
 {
-    public static class UmbracoBackOfficeApplicationBuilderExtensions
+    public static class BackOfficeApplicationBuilderExtensions
     {
         public static IApplicationBuilder UseUmbraco(this IApplicationBuilder app)
         {
